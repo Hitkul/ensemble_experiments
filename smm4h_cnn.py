@@ -290,12 +290,13 @@ para_free_em_dim = Categorical(categories=[100,300,400],name='free_em_dim')
 
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
 
-para_epoch = Categorical(categories=[10,20,30,50,100],name='epoch')
+# para_epoch = Categorical(categories=[10,20,30,50,100],name='epoch')
+para_epoch = Categorical(categories=[1,2],name='epoch')
 
 
 parameters = [para_learning_rate,para_dropout,para_n_dense,para_n_filters,para_filter_size_c1,para_filter_size_c2,para_filter_size_c3,para_em_c1,para_em_c2,para_em_c3,para_em_trainable_flag_c1,para_em_trainable_flag_c2,para_em_trainable_flag_c3,para_free_em_dim,para_batch_size,para_epoch]
 
-default_parameters = [0.0071353667446707675,0.5777195655120914,400,100,6,4,4,'embedding_matrix_word2vec','embedding_matrix_word2vec','embedding_matrix_word2vec',False,True,False,100,16,10]
+default_parameters = [0.0071353667446707675,0.5777195655120914,400,100,6,4,4,'embedding_matrix_word2vec','embedding_matrix_word2vec','embedding_matrix_word2vec',False,True,False,100,16,1]
 
 key = 1
 record = {}
