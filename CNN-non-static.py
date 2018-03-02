@@ -48,22 +48,22 @@ def load_data_from_file(filename):
 # In[3]:
 
 
-label_train,sentence_train = load_data_from_file('dataset/trec/TREC.train.all')
+label_train,sentence_train = load_data_from_file('dataset/sst2/stsa.binary.train')
 
 
 # In[4]:
 
 
-# label_dev,sentence_dev = load_data_from_file('dataset/sst1/stsa.fine.dev')
+label_dev,sentence_dev = load_data_from_file('dataset/sst2/stsa.binary.dev')
 
 
 # In[5]:
 
 
-# train_sentences = sentence_train+sentence_dev
-# train_labels = label_train+label_dev
-train_sentences = sentence_train
-train_labels = label_train
+train_sentences = sentence_train+sentence_dev
+train_labels = label_train+label_dev
+# train_sentences = sentence_train
+# train_labels = label_train
 
 
 # In[6]:
@@ -125,7 +125,7 @@ trainY = np.array(train_labels)
 
 
 
-max_len = 12
+max_len = 25
 
 
 # In[15]:
@@ -430,6 +430,5 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,free_em_dim,b
 search_result = gp_minimize(func=fitness,
                             dimensions=parameters,
                             acq_func='EI',
-                            n_calls=11,
+                            n_calls=150,
                             x0=default_parameters)
-
