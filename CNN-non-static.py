@@ -1,3 +1,9 @@
+
+# coding: utf-8
+
+# In[1]:
+
+
 import json
 import string
 from nltk.corpus import stopwords
@@ -26,8 +32,12 @@ from skopt.space import Real, Categorical, Integer
 from skopt.utils import use_named_args
 from pprint import pprint
 
+
+# In[2]:
+
+
 def load_data_from_file(filename):
-    with open(filename,'r') as fin:
+    with open(filename,'r', errors='ignore') as fin:
         lines = fin.readlines()
     
     label = [int(x.split()[0]) for x in lines]
@@ -35,19 +45,48 @@ def load_data_from_file(filename):
     return label,sentence
 
 
-label_train,sentence_train = load_data_from_file('dataset/sst2/stsa.binary.train')
+# In[3]:
 
 
-label_dev,sentence_dev = load_data_from_file('dataset/sst2/stsa.binary.dev')
+label_train,sentence_train = load_data_from_file('dataset/trec/TREC.train.all')
 
 
-train_sentences = sentence_train+sentence_dev
-train_labels = label_train+label_dev
+# In[4]:
 
+
+# label_dev,sentence_dev = load_data_from_file('dataset/sst1/stsa.fine.dev')
+
+
+# In[5]:
+
+
+# train_sentences = sentence_train+sentence_dev
+# train_labels = label_train+label_dev
+train_sentences = sentence_train
+train_labels = label_train
+
+
+# In[6]:
+
+
+
+# In[7]:
 
 
 number_of_classes = len(set(train_labels))
 
+
+
+# In[8]:
+
+
+
+
+# In[9]:
+
+
+
+# In[10]:
 
 def remove_punctuation(s):
     list_punctuation = list(string.punctuation)
@@ -77,12 +116,19 @@ def clean_sentence(sentence):
     return tokens
 
 
+# In[11]:
+
+
 print("cleaning train data")
 trainX = [clean_sentence(s) for s in train_sentences]
 trainY = np.array(train_labels)
 
 
-max_len = 25
+
+max_len = 12
+
+
+# In[15]:
 
 
 def create_tokenizer(lines):
@@ -91,10 +137,16 @@ def create_tokenizer(lines):
     return tokenizer
 
 
+# In[16]:
+
+
 def encode_text(tokenizer, lines, length):
     encoded = tokenizer.texts_to_sequences(lines)
     padded = pad_sequences(encoded, maxlen=length, padding='post')
     return padded
+
+
+# In[17]:
 
 
 #loading GloVe embedding
@@ -111,7 +163,7 @@ def load_GloVe_embedding(file_name):
     return embeddings_index
 
 
-# In[146]:
+# In[18]:
 
 
 # create a weight matrix for words in training docs
@@ -124,7 +176,7 @@ def get_GloVe_embedding_matrix(embeddings_index):
     return embedding_matrix
 
 
-# In[147]:
+# In[19]:
 
 
 #fast text word embedding
@@ -144,7 +196,7 @@ def load_fast_text_model(sentences):
         return m
 
 
-# In[148]:
+# In[20]:
 
 
 def get_fast_text_matrix(model):
@@ -159,7 +211,7 @@ def get_fast_text_matrix(model):
     return embedding_matrix
 
 
-# In[149]:
+# In[21]:
 
 
 #loading godin word embedding
@@ -168,7 +220,7 @@ def load_godin_word_embedding(path):
     return godin_embedding.Word2Vec.load_word2vec_format(path, binary=True)
 
 
-# In[150]:
+# In[22]:
 
 
 def get_godin_embedding_matrix(model):
@@ -183,7 +235,7 @@ def get_godin_embedding_matrix(model):
     return embedding_matrix
 
 
-# In[151]:
+# In[23]:
 
 
 #loading Google Word2Vec
@@ -192,7 +244,7 @@ def load_google_word2vec(file_name):
     return KeyedVectors.load_word2vec_format(file_name, binary=True)
 
 
-# In[152]:
+# In[24]:
 
 
 def get_word2vec_embedding_matrix(model):
@@ -207,15 +259,15 @@ def get_word2vec_embedding_matrix(model):
     return embedding_matrix
 
 
-# In[153]:
+# In[25]:
 
 
 def define_model(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filter_size,em,free_em_dim,number_of_classes):
     inputs = Input(shape=(length,))
     if em == 'free':
-        embedding = Embedding(vocab_size, free_em_dim)(inputs)
+        embedding = Embedding(vocab_size, free_em_dim,trainable = True)(inputs)
     else:
-        embedding = Embedding(vocab_size, len(eval(em)[0]), weights = [eval(em)],input_length=length,trainable = False)(inputs)
+        embedding = Embedding(vocab_size, len(eval(em)[0]), weights = [eval(em)],input_length=length,trainable = True)(inputs)
     
     conv = Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu')(embedding)
     drop = Dropout(dropout)(conv)
@@ -233,7 +285,7 @@ def define_model(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filte
     return model
 
 
-# In[154]:
+# In[26]:
 
 
 tokenizer = create_tokenizer(trainX)
@@ -243,7 +295,7 @@ print('Vocabulary size: %d' % vocab_size)
 trainX = encode_text(tokenizer, trainX, max_len)
 
 
-# In[155]:
+# In[27]:
 
 
 glove_model = load_GloVe_embedding('word_embeddings/glove.6B.300d.txt')
@@ -252,7 +304,7 @@ godin_model = load_godin_word_embedding("word_embeddings/word2vec_twitter_model.
 word2vec_model= load_google_word2vec('word_embeddings/GoogleNews-vectors-negative300.bin')
 
 
-# In[156]:
+# In[28]:
 
 
 embedding_matrix_glove = get_GloVe_embedding_matrix(glove_model)
@@ -261,20 +313,20 @@ embedding_matrix_fast_text = get_fast_text_matrix(fast_text_model)
 embedding_matrix_godin = get_godin_embedding_matrix(godin_model)
 
 
-# In[157]:
+# In[29]:
 
 
 seed = 7
 np.random.seed(seed)
 
 
-# In[158]:
+# In[30]:
 
 
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 
 
-# In[159]:
+# In[43]:
 
 
 para_learning_rate = Real(low=1e-4, high=1e-2, prior='log-uniform',name='learning_rate')
@@ -283,7 +335,7 @@ para_dropout = Real(low=0.4, high=0.9,name = 'dropout')
 
 para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
 
-para_n_filters = Categorical(categories=[10,32,64,100,200],name='n_filters')
+para_n_filters = Categorical(categories=[10,32,100,200],name='n_filters')
 
 para_filter_size = Integer(low=1,high=8,name = 'filter_size')
 para_em = Categorical(categories=['embedding_matrix_fast_text','embedding_matrix_godin','embedding_matrix_word2vec','embedding_matrix_glove','free'],name='em')
@@ -300,14 +352,14 @@ parameters = [para_learning_rate,para_dropout,para_n_dense,para_n_filters,para_f
 default_parameters = [0.001,0.5777195655120914,100,32,3,'embedding_matrix_word2vec',100,64,10]
 
 
-# In[160]:
+# In[40]:
 
 
 key = 1
 record = {}
 
 
-# In[161]:
+# In[41]:
 
 
 @use_named_args(dimensions=parameters)
@@ -372,7 +424,7 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,free_em_dim,b
     return -mean_acc
 
 
-# In[162]:
+# In[42]:
 
 
 search_result = gp_minimize(func=fitness,
@@ -380,3 +432,4 @@ search_result = gp_minimize(func=fitness,
                             acq_func='EI',
                             n_calls=11,
                             x0=default_parameters)
+
