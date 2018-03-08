@@ -111,6 +111,25 @@ def cnn_bi_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_
     print(model.summary())
     return model
 
+
+def cnn_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,learning_rate,conv_dropout,l_or_g_dropout,units_out):
+    model = Sequential()
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
+    model.add(Dropout(conv_dropout))
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(LSTM(units_out))
+    model.add(Dropout(l_or_g_dropout))
+    if number_of_classes == 2:
+        model.add(Dense(1, activation='sigmoid'))
+    else:
+        model.add(Dense(number_of_classes, activation='softmax'))
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    print(model.summary())
+    return model
+
+
 def cnn_bi_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,learning_rate,conv_dropout,l_or_g_dropout,units_out):
     model = Sequential()
     model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
@@ -127,3 +146,21 @@ def cnn_bi_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_t
     model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
     print(model.summary())
     return model
+
+def cnn_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,learning_rate,conv_dropout,l_or_g_dropout,units_out):
+    model = Sequential()
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
+    model.add(Dropout(conv_dropout))
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(GRU(units_out))
+    model.add(Dropout(l_or_g_dropout))
+    if number_of_classes == 2:
+        model.add(Dense(1, activation='sigmoid'))
+    else:
+        model.add(Dense(number_of_classes, activation='softmax'))
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    print(model.summary())
+    return model
+
