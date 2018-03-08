@@ -10,6 +10,7 @@ import pandas as pd
 from os import remove
 from pprint import pprint
 import re
+import codecs
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
@@ -30,7 +31,7 @@ from base_learners import cnn,lstm,gru,bi_lstm,bi_gru,cnn_bi_gru,cnn_bi_lstm,cnn
 
 
 def load_data_from_file(filename):
-    with open(filename,'r', errors='ignore') as fin:
+    with codecs.open(filename,'r', errors='ignore') as fin:
         lines = fin.readlines()
     label = [int(x.split()[0]) for x in lines]
     sentence = [' '.join(x.split()[1:]) for x in lines]
@@ -236,7 +237,7 @@ embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
 
 para_learning_rate = Real(low=1e-4, high=1e-2, prior='log-uniform',name='learning_rate')
 para_dropout = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
-para_em = Categorical(categories=[embedding_matrix_fast_text,embedding_matrix_godin,embedding_matrix_word2vec,embedding_matrix_glove],name='em')
+para_em = Categorical(categories=['embedding_matrix_fast_text','embedding_matrix_godin','embedding_matrix_word2vec','embedding_matrix_glove'],name='em')
 para_em_trainable_flag = Categorical(categories=[True,False],name='em_trainable_flag')
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
 para_epoch = Categorical(categories=[5,10,20,50,100],name='epoch')
