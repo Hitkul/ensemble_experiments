@@ -1,8 +1,4 @@
-
-# coding: utf-8
-
-# In[1]:
-
+from __future__ import print_function
 
 import sys
 sys.path.append('../')
@@ -27,9 +23,6 @@ import skopt
 from skopt import gp_minimize, forest_minimize
 from skopt.space import Real, Categorical, Integer
 from skopt.utils import use_named_args
-get_ipython().magic('matplotlib inline')
-import matplotlib.pyplot as plt
-plt.rcParams["figure.figsize"] = [12,10]
 from base_learners import cnn,lstm,gru,bi_lstm,bi_gru,cnn_bi_gru,cnn_bi_lstm,cnn_gru,cnn_lstm
 
 
@@ -52,41 +45,15 @@ dev_label,dev_sentence = load_data_from_file('dataset/sst1/stsa.fine.dev')
 test_labels,test_sentences = load_data_from_file('dataset/sst1/stsa.fine.test')
 
 
-# In[4]:
-
-
 train_sentences = train_sentences+dev_sentence
 train_labels = train_labels+dev_label
-
-
-# In[5]:
-
-
-len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
 
 
 # In[6]:
 
 
 number_of_classes = len(set(train_labels))
-number_of_classes
 
-
-# In[7]:
-
-
-for x in range(number_of_classes):
-    print(x,train_labels.count(x))
-
-
-# In[8]:
-
-
-for x in range(number_of_classes):
-    print(x,test_labels.count(x))
-
-
-# In[9]:
 
 
 def remove_punctuation(s):
@@ -97,8 +64,6 @@ def remove_punctuation(s):
 
 
 # In[10]:
-
-
 def clean_sentence(sentence):
     #removes links
     sentence = re.sub(r'(?P<url>https?://[^\s]+)', r'', sentence)
@@ -122,35 +87,16 @@ def clean_sentence(sentence):
     return tokens
 
 
-# In[11]:
-
-
 print("cleaning data")
 trainX = [clean_sentence(s) for s in train_sentences]
 testX = [clean_sentence(s) for s in test_sentences]
 trainY = np.array(train_labels)
 
 
-# In[12]:
-
-
 back_up_for_fasttext = trainX
 
 
 # In[13]:
-
-
-lengths = [len(line.split()) for line in trainX]
-
-
-# In[14]:
-
-
-print(max(lengths))
-plt.hist(lengths)
-
-
-# In[15]:
 
 
 max_len = 24
@@ -270,19 +216,19 @@ trainY = to_categorical(trainY,num_classes=number_of_classes)
 # In[25]:
 
 
-# glove_model = load_GloVe_embedding('word_embeddings/glove.6B.300d.txt')
-# fast_text_model = load_fast_text_model(back_up_for_fasttext)
-# godin_model = load_godin_word_embedding("word_embeddings/word2vec_twitter_model.bin")
+glove_model = load_GloVe_embedding('word_embeddings/glove.6B.300d.txt')
+fast_text_model = load_fast_text_model(back_up_for_fasttext)
+godin_model = load_godin_word_embedding("word_embeddings/word2vec_twitter_model.bin")
 word2vec_model= load_google_word2vec('../word_embeddings/GoogleNews-vectors-negative300.bin')
 
 
 # In[26]:
 
 
-# embedding_matrix_glove = get_GloVe_embedding_matrix(glove_model)
+embedding_matrix_glove = get_GloVe_embedding_matrix(glove_model)
 embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
-# embedding_matrix_fast_text = get_word_embedding_matrix(fast_text_model,100)
-# embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
+embedding_matrix_fast_text = get_word_embedding_matrix(fast_text_model,100)
+embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
 
 
 # In[29]:
@@ -290,8 +236,7 @@ embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
 
 para_learning_rate = Real(low=1e-4, high=1e-2, prior='log-uniform',name='learning_rate')
 para_dropout = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
-# para_em = Categorical(categories=[embedding_matrix_fast_text,embedding_matrix_godin,embedding_matrix_word2vec,embedding_matrix_glove],name='em')
-para_em = Categorical(categories=['embedding_matrix_word2vec'],name='em')
+para_em = Categorical(categories=[embedding_matrix_fast_text,embedding_matrix_godin,embedding_matrix_word2vec,embedding_matrix_glove],name='em')
 para_em_trainable_flag = Categorical(categories=[True,False],name='em_trainable_flag')
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
 para_epoch = Categorical(categories=[5,10,20,50,100],name='epoch')
