@@ -66,7 +66,8 @@ def gru(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,e
 def bi_lstm(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,em_trainable_flag):
     model = Sequential()
     model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
-    model.add(LSTM(units_out, dropout=dropout, recurrent_dropout=dropout))
+    model.add(Bidirectional(LSTM(units_out)))
+    model.add(Dropout(0.5))
     if number_of_classes == 2:
         model.add(Dense(1, activation='sigmoid'))
     else:
@@ -76,4 +77,3 @@ def bi_lstm(length,vocab_size,learning_rate,dropout,units_out,em,number_of_class
     model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
     print(model.summary())
     return model
-
