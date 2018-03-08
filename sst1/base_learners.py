@@ -2,7 +2,10 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras.layers import Embedding
 from keras.layers import Conv1D, GlobalMaxPooling1D
+from keras.layers import LSTM
 from keras.optimizers import Adam
+
+
 
 
 def cnn(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filter_size,em,free_em_dim,number_of_classes,em_trainable_flag):
@@ -31,5 +34,23 @@ def cnn(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filter_size,em
 
     optimizer = Adam(lr=learning_rate)
     model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    print(model.summary())
+    return model
+
+
+def lstm(length,vocab_size,learning_rate,dropout,lstm_out,em,free_em_dim,number_of_classes,em_trainable_flag):
+    model = Sequential()
+    if em == 'free':
+        model.add(Embedding(vocab_size,free_em_dim,trainable = True))
+    else:
+        model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(LSTM(lstm_out, dropout=dropout, recurrent_dropout=dropout))
+    if number_of_classes == 2:
+        model.add(Dense(1, activation='sigmoid'))
+    else:
+        model.add(Dense(number_of_classes, activation='softmax'))
+    
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
     print(model.summary())
     return model
