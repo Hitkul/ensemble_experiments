@@ -10,7 +10,7 @@ from keras.optimizers import Adam
 
 def cnn(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filter_size,em,free_em_dim,number_of_classes,em_trainable_flag):
     model = Sequential()
-    if em == 'free':
+    if em == None:
         model.add(Embedding(vocab_size,free_em_dim,trainable = True))
     else:
         model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
@@ -40,7 +40,7 @@ def cnn(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filter_size,em
 
 def lstm(length,vocab_size,learning_rate,dropout,lstm_out,em,free_em_dim,number_of_classes,em_trainable_flag):
     model = Sequential()
-    if em == 'free':
+    if em == None:
         model.add(Embedding(vocab_size,free_em_dim,trainable = True))
     else:
         model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
