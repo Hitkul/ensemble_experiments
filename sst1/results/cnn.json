@@ -1,0 +1,30 @@
+{
+    "1": {
+        "parameter": {
+            "learning_rate": 0.001,
+            "dropout": 0.2,
+            "n_dense": 300,
+            "n_filters": 100,
+            "filter_size": 5,
+            "em": "embedding_matrix_word2vec",
+            "em_trainable_flag": true,
+            "batch": 32,
+            "epoch": 5
+        },
+        "acc": 0.40226244343891404
+    },
+    "2": {
+        "parameter": {
+            "learning_rate": 0.001,
+            "dropout": 0.2,
+            "n_dense": 300,
+            "n_filters": 100,
+            "filter_size": 5,
+            "em": "embedding_matrix_word2vec",
+            "em_trainable_flag": true,
+            "batch": 32,
+            "epoch": 5
+        },
+        "acc": 0.41402714932126694
+    }
+}
