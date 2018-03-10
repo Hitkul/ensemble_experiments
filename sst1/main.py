@@ -217,9 +217,9 @@ trainY = to_categorical(trainY,num_classes=number_of_classes)
 # In[25]:
 
 
-glove_model = load_GloVe_embedding('word_embeddings/glove.6B.300d.txt')
+glove_model = load_GloVe_embedding('../word_embeddings/glove.6B.300d.txt')
 fast_text_model = load_fast_text_model(back_up_for_fasttext)
-godin_model = load_godin_word_embedding("word_embeddings/word2vec_twitter_model.bin")
+godin_model = load_godin_word_embedding("../word_embeddings/word2vec_twitter_model.bin")
 word2vec_model= load_google_word2vec('../word_embeddings/GoogleNews-vectors-negative300.bin')
 
 
