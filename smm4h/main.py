@@ -292,7 +292,7 @@ embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
 
 para_learning_rate = Real(low=1e-4, high=1e-2, prior='log-uniform',name='learning_rate')
 para_dropout = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
-# para_em = Categorical(categories=[embedding_matrix_fast_text,embedding_matrix_godin,embedding_matrix_word2vec,embedding_matrix_glove],name='em')
+# para_em = Categorical(categories=['embedding_matrix_fast_text','embedding_matrix_godin','embedding_matrix_word2vec','embedding_matrix_glove'],name='em')
 para_em = Categorical(categories=['embedding_matrix_word2vec'],name='em')
 para_em_trainable_flag = Categorical(categories=[True,False],name='em_trainable_flag')
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
