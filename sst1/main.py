@@ -403,14 +403,14 @@ search_result = gp_minimize(func=fitness,
 # In[122]:
 
 
-# model = bi_gru(length=max_len,
+# model = lstm(length=max_len,
 #              vocab_size=vocab_size,
-#              learning_rate=parameters_lstm_or_gru['learning_rate'],
-#              dropout=parameters_lstm_or_gru['dropout'],
-#              units_out=parameters_lstm_or_gru['units_out'],
-#              em=parameters_lstm_or_gru['em'],
+#              learning_rate=parameters['learning_rate'],
+#              dropout=parameters['dropout'],
+#              units_out=parameters['units_out'],
+#              em=parameters['em'],
 #              number_of_classes=number_of_classes,
-#              em_trainable_flag=parameters_lstm_or_gru['em_trainable_flag'])
+#              em_trainable_flag=parameters['em_trainable_flag'])
 
 
 # In[123]:
