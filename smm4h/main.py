@@ -150,17 +150,6 @@ trainY = np.array(train_labels)
 back_up_for_fasttext = trainX
 
 
-# In[31]:
-
-
-lengths = [len(line.split()) for line in trainX]
-
-
-# In[34]:
-
-
-print(max(lengths))
-plt.hist(lengths,bins=[5,10,15,20,25,30])
 
 
 # In[35]:
