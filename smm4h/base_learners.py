@@ -8,9 +8,9 @@ from keras.optimizers import Adam
 
 
 
-def cnn(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filter_size,em,number_of_classes,em_trainable_flag):
+def cnn(length,vocab_size,n_dense,dropout,n_filters,filter_size,em,number_of_classes):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(Dropout(dropout))
     model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
     # we use max pooling:
@@ -29,43 +29,40 @@ def cnn(length,vocab_size,n_dense,dropout,learning_rate,n_filters,filter_size,em
         model.add(Dense(number_of_classes))
         model.add(Activation('softmax'))
 
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     print(model.summary())
     return model
 
 
-def lstm(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,em_trainable_flag):
+def lstm(length,vocab_size,dropout,units_out,em,number_of_classes):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(LSTM(units_out, dropout=dropout, recurrent_dropout=dropout))
     if number_of_classes == 2:
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
     
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 
-def gru(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,em_trainable_flag):
+def gru(length,vocab_size,dropout,units_out,em,number_of_classes):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(GRU(units_out, dropout=dropout, recurrent_dropout=dropout))
     if number_of_classes == 2:
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
     
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 
-def bi_lstm(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,em_trainable_flag):
+def bi_lstm(length,vocab_size,dropout,units_out,em,number_of_classes):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(Bidirectional(LSTM(units_out)))
     model.add(Dropout(dropout))
     if number_of_classes == 2:
@@ -73,14 +70,13 @@ def bi_lstm(length,vocab_size,learning_rate,dropout,units_out,em,number_of_class
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
     
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 
-def bi_gru(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,em_trainable_flag):
+def bi_gru(length,vocab_size,dropout,units_out,em,number_of_classes):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(Bidirectional(GRU(units_out)))
     model.add(Dropout(dropout))
     if number_of_classes == 2:
@@ -88,15 +84,14 @@ def bi_gru(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classe
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
     
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 
 
-def cnn_bi_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,learning_rate,conv_dropout,l_or_g_dropout,units_out):
+def cnn_bi_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,conv_dropout,l_or_g_dropout,units_out):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
     model.add(Dropout(conv_dropout))
     model.add(MaxPooling1D(pool_size=2))
@@ -106,15 +101,14 @@ def cnn_bi_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 
 
-def cnn_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,learning_rate,conv_dropout,l_or_g_dropout,units_out):
+def cnn_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,conv_dropout,l_or_g_dropout,units_out):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
     model.add(Dropout(conv_dropout))
     model.add(MaxPooling1D(pool_size=2))
@@ -124,15 +118,14 @@ def cnn_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_tra
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 
 
-def cnn_bi_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,learning_rate,conv_dropout,l_or_g_dropout,units_out):
+def cnn_bi_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,conv_dropout,l_or_g_dropout,units_out):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
     model.add(Dropout(conv_dropout))
     model.add(MaxPooling1D(pool_size=2))
@@ -142,14 +135,13 @@ def cnn_bi_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_t
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 
-def cnn_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,learning_rate,conv_dropout,l_or_g_dropout,units_out):
+def cnn_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,conv_dropout,l_or_g_dropout,units_out):
     model = Sequential()
-    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
+    model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = False))
     model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
     model.add(Dropout(conv_dropout))
     model.add(MaxPooling1D(pool_size=2))
@@ -159,8 +151,7 @@ def cnn_gru(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trai
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
-    optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
     print(model.summary())
     return model
 

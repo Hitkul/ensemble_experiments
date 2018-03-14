@@ -335,35 +335,33 @@ record = {}
 
 ##this will change based on the model
 @use_named_args(dimensions=parameters_cnn)
-def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch):
+def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoch):
     global key
     global record
     global number_of_classes
     print('-----------------------------combination no={0}------------------'.format(key))
     parameters = {
-            "learning_rate": learning_rate,    
             "dropout": dropout,
-            "n_dense": n_dense,
-            "n_filters": n_filters,
-            "filter_size": filter_size,
+            "learning_rate":learning_rate ,
+            "units_out":units_out,
             "em": em,
             "em_trainable_flag":em_trainable_flag,
             "batch": batch_size,
             "epoch": epoch
         }
-    
+
+
     pprint(parameters)
     
-    model = cnn(length=max_len,
-                vocab_size=vocab_size,
-                n_dense=parameters['n_dense'],
-                dropout=parameters['dropout'],
-                learning_rate=parameters['learning_rate'],
-                n_filters=parameters['n_filters'],
-                filter_size=int(parameters['filter_size']),
-                em = eval(parameters['em']),
-                number_of_classes=number_of_classes,
-                em_trainable_flag=parameters['em_trainable_flag'])
+    model = lstm(length=max_len,
+             vocab_size=vocab_size,
+             learning_rate=parameters['learning_rate'],
+             dropout=parameters['dropout'],
+             units_out=parameters['units_out'],
+             em=eval(parameters['em']),
+             number_of_classes=number_of_classes,
+             em_trainable_flag=parameters['em_trainable_flag'])
+
 
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
     pred = model.predict(testX)

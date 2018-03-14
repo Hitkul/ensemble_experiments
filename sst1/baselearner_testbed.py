@@ -238,7 +238,7 @@ trainY = to_categorical(trainY,num_classes=number_of_classes)
 
 # glove_model = load_GloVe_embedding('word_embeddings/glove.6B.300d.txt')
 # fast_text_model = load_fast_text_model(back_up_for_fasttext)
-# godin_model = load_godin_word_embedding("word_embeddings/word2vec_twitter_model.bin")
+# godin_model = load_godin_word_embedding("../word_embeddings/word2vec_twitter_model.bin")
 word2vec_model= load_google_word2vec('../word_embeddings/GoogleNews-vectors-negative300.bin')
 
 
@@ -265,26 +265,37 @@ parameters_cnn = {
             "dropout": 0.6,
             "learning_rate": 0.0001,
             "n_filters": 200,
-            "filter_size": 1,
+            "filter_size": 3,
             "em": 'embedding_matrix_word2vec',
             "em_trainable_flag":True,
             "batch": 8,
-            "epoch": 20
+            "epoch": 50
         }
 
 
 # In[25]:
 
 
-parameters_lstm = {
-            "dropout": 0.5,
-            "learning_rate": 0.000641718,
-            "units_out": 64,
-            "em": 'embedding_matrix_word2vec',
-            "em_trainable_flag":False,
-            "batch": 8,
-            "epoch": 50
-        }
+# parameters_lstm = {
+#             "dropout": 0.5,
+#             "learning_rate": 0.000641718,
+#             "units_out": 64,
+#             "em": 'embedding_matrix_word2vec',
+#             "em_trainable_flag":False,
+#             "batch": 8,
+#             "epoch": 50
+#         }
+
+
+# parameters_gru = {
+#             "dropout": 0.4,
+#             "learning_rate": 0.000337372,
+#             "units_out": 128,
+#             "em": 'embedding_matrix_word2vec',
+#             "em_trainable_flag":False,
+#             "batch": 32,
+#             "epoch": 50
+#         }
 
 
 # In[ ]:
@@ -305,29 +316,42 @@ model_cnn = cnn(length=max_len,
 # In[ ]:
 
 
-model_lstm = bi_gru(length=max_len,
-             vocab_size=vocab_size,
-             learning_rate=parameters_lstm['learning_rate'],
-             dropout=parameters_lstm['dropout'],
-             units_out=parameters_lstm['units_out'],
-             em=parameters_lstm['em'],
-             number_of_classes=number_of_classes,
-             em_trainable_flag=parameters_lstm['em_trainable_flag'])
+# model_lstm = lstm(length=max_len,
+#              vocab_size=vocab_size,
+#              learning_rate=parameters_lstm['learning_rate'],
+#              dropout=parameters_lstm['dropout'],
+#              units_out=parameters_lstm['units_out'],
+#              em=parameters_lstm['em'],
+#              number_of_classes=number_of_classes,
+#              em_trainable_flag=parameters_lstm['em_trainable_flag'])
 
 
-# In[ ]:
+# model_gru = gru(length=max_len,
+#              vocab_size=vocab_size,
+#              learning_rate=parameters_gru['learning_rate'],
+#              dropout=parameters_gru['dropout'],
+#              units_out=parameters_gru['units_out'],
+#              em=parameters_gru['em'],
+#              number_of_classes=number_of_classes,
+#              em_trainable_flag=parameters_gru['em_trainable_flag'])
 
 
-history_cnn = model_cnn.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
+# # In[ ]:
 
 
-# In[ ]:
+history_cnn = model_cnn.fit(trainX,trainY,epochs=parameters_cnn["epoch"],batch_size=parameters_cnn["batch"])
 
 
-history_lstm = model_lstm.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
+# # In[ ]:
 
 
-# In[ ]:
+# history_lstm = model_lstm.fit(trainX,trainY,epochs=parameters_lstm["epoch"],batch_size=parameters_lstm["batch"])
+
+
+# history_gru = model_gru.fit(trainX,trainY,epochs=parameters_gru["epoch"],batch_size=parameters_gru["batch"])
+
+
+# # In[ ]:
 
 
 pred_cnn = model_cnn.predict(testX)
@@ -338,32 +362,42 @@ acc_cnn = accuracy_score(test_labels,pred_class_cnn)
 # In[ ]:
 
 
-pred_lstm = model_lstm.predict(testX)
-pred_class_lstm = [np.argmax(x) for x in pred_lstm]
-acc_lstm = accuracy_score(test_labels,pred_class_lstm)
+# pred_lstm = model_lstm.predict(testX)
+# pred_class_lstm = [np.argmax(x) for x in pred_lstm]
+# acc_lstm = accuracy_score(test_labels,pred_class_lstm)
 
 
-# In[ ]:
+# pred_gru = model_gru.predict(testX)
+# pred_class_gru = [np.argmax(x) for x in pred_gru]
+# acc_gru = accuracy_score(test_labels,pred_class_gru)
 
 
-pred_class_record['cnn'] = {}
-pred_class_record['cnn']['pred_class'] = pred_class_cnn
-pred_class_record['cnn']['acc'] = acc_cnn
-pred_class_record['lstm'] = {}
-pred_class_record['lstm']['pred_class'] = pred_class_lstm
-pred_class_record['lstm']['acc'] = acc_lstm
+# # In[ ]:
 
 
-# In[ ]:
+# pred_class_record['cnn'] = {}
+# pred_class_record['cnn']['pred_class'] = pred_class_cnn
+# pred_class_record['cnn']['acc'] = acc_cnn
+# pred_class_record['lstm'] = {}
+# pred_class_record['lstm']['pred_class'] = pred_class_lstm
+# pred_class_record['lstm']['acc'] = acc_lstm
+
+# pred_class_record['gru'] = {}
+# pred_class_record['gru']['pred_class'] = pred_class_gru
+# pred_class_record['gru']['acc'] = acc_gru
 
 
-with open('results/pred_results.json','w') as fout:
-    json.dump(pred_class_record,fout,indent=4)
+# # In[ ]:
+
+
+# with open('results/pred_results.json','w') as fout:
+#     json.dump(pred_class_record,fout,indent=4)
 
 
 # In[ ]:
 
 
 print("cnn == ",acc_cnn)
-print("lstm == ",acc_lstm)
+# print("lstm == ",acc_lstm)
+# print("gru == ",acc_gru)
 
