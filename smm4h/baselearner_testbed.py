@@ -68,7 +68,11 @@ test_sentences = test_data['tweet'].tolist()
 # In[21]:
 
 
-len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
+train_labels = train_labels[:100]
+train_sentences = train_sentences[:100]
+test_labels = test_labels[:10]
+test_sentences = test_sentences[:10]
+
 
 
 # In[23]:
@@ -82,24 +86,7 @@ train_labels = [x-1 for x in train_labels]
 
 
 number_of_classes = len(set(train_labels))
-number_of_classes
 
-
-# In[25]:
-
-
-for x in range(number_of_classes):
-    print(x,train_labels.count(x))
-
-
-# In[26]:
-
-
-for x in range(number_of_classes):
-    print(x,test_labels.count(x))
-
-
-# In[27]:
 
 
 def remove_punctuation(s):
@@ -142,17 +129,6 @@ print("cleaning data")
 trainX = [clean_sentence(s) for s in train_sentences]
 testX = [clean_sentence(s) for s in test_sentences]
 trainY = np.array(train_labels)
-
-
-# In[30]:
-
-
-back_up_for_fasttext = trainX
-
-
-
-
-# In[35]:
 
 
 max_len = 20
@@ -208,6 +184,16 @@ def get_results(model):
     r = recall_score(test_labels,pred_class,labels=[0,1],average='micro')
     acc = accuracy_score(test_labels,pred_class)
     return f1,p,r,acc,pred_class
+
+def add_record(m_name,f1_m,p_m,r_m,acc_m,pred_class_m):
+    global pred_class_record
+    pred_class_record[m_name]={}
+    pred_class_record[m_name]['pred_class']=pred_class_m
+    pred_class_record[m_name]['f1']=f1_m
+    pred_class_record[m_name]['p']=p_m
+    pred_class_record[m_name]['r']=r_m
+    pred_class_record[m_name]['acc']=acc_m
+
 
 
 # In[44]:
@@ -336,34 +322,40 @@ history_cnn = model_cnn.fit(trainX,trainY,epochs=parameters_cnn["epoch"],batch_s
 
 f1_cnn,p_cnn,r_cnn,acc_cnn,pred_class_cnn = get_results(model_cnn)
 
+add_record("cnn",f1_cnn,p_cnn,r_cnn,acc_cnn,pred_class_cnn)
 
+model.save('models/cnn.h5')
 
 ##BI-LSTM
 history_bi_lstm = model_bi_lstm.fit(trainX,trainY,epochs=parameters_bi_lstm["epoch"],batch_size=parameters_bi_lstm["batch"])
 
-
 f1_bi_lstm,p_bi_lstm,r_bi_lstm,acc_bi_lstm,pred_class_bi_lstm = get_results(model_bi_lstm)
 
+add_record("bi_lstm",f1_bi_lstm,p_bi_lstm,r_bi_lstm,acc_bi_lstm,pred_class_bi_lstm)
+
+model.save('models/bi_lstm.h5')
 
 ##CNN_bi_lstm
 history_cnn_bi_lstm = model_cnn_bi_lstm.fit(trainX,trainY,epochs=parameters_bi_lstm_cnn["epoch"],batch_size=parameters_bi_lstm_cnn["batch"])
 
-
 f1_cnn_bi_lstm,p_cnn_bi_lstm,r_cnn_bi_lstm,acc_cnn_bi_lstm,pred_class_cnn_bi_lstm = get_results(model_cnn_bi_lstm)
 
+add_record("cnn_bi_lstm",f1_cnn_bi_lstm,p_cnn_bi_lstm,r_cnn_bi_lstm,acc_cnn_bi_lstm,pred_class_cnn_bi_lstm)
+
+model.save('models/cnn_bi_lstm.h5')
 
 ##CNN_lstm
 history_cnn_lstm = model_cnn_lstm.fit(trainX,trainY,epochs=parameters_lstm_cnn["epoch"],batch_size=parameters_lstm_cnn["batch"])
 
 f1_cnn_lstm,p_cnn_lstm,r_cnn_lstm,acc_cnn_lstm,pred_class_cnn_lstm = get_results(model_cnn_lstm)
 
+add_record("cnn_lstm",f1_cnn_lstm,p_cnn_lstm,r_cnn_lstm,acc_cnn_lstm,pred_class_cnn_lstm)
+
+model.save('models/cnn_lstm.h5')
 
 
-def add_record(m_name,f1_m,p_m,r_m,acc_m,pred_class_m):
-    global pred_class_record
-    pred_class_record[m_name] ={}
-    pred_class_record[m_name]['pred_class'] =pred_class_m
-    pred_class_record[m_name]['f1'] =f1_m
-    pred_class_record[m_name]['p'] =p_m
-    pred_class_record[m_name]['r'] =r_m
-    pred_class_record[m_name]['acc'] = acc_m
+with open("results/final_results.json",'w') as fout:
+    json.dump(pred_class_record,fout,indent=4)
+
+
+print("done")
