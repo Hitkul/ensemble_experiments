@@ -81,7 +81,6 @@ test_sentences = test_sentences[:10]
 test_labels = [x-1 for x in test_labels]
 train_labels = [x-1 for x in train_labels]
 
-
 # In[24]:
 
 
@@ -177,7 +176,7 @@ def get_word_embedding_matrix(model,dim):
 
 
 def get_results(model):
-    pred = model_cnn.predict(testX)
+    pred = model.predict(testX)
     pred_class = [np.argmax(x) for x in pred]
     f1 = f1_score(test_labels,pred_class,labels=[0,1],average='micro')
     p = precision_score(test_labels,pred_class,labels=[0,1],average='micro')
@@ -207,7 +206,7 @@ trainX = encode_text(tokenizer, trainX, max_len)
 testX = encode_text(tokenizer, testX, max_len)
 trainY = to_categorical(trainY,num_classes=number_of_classes)
 
-
+sys.exit()
 # In[25]:
 
 
