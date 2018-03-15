@@ -67,14 +67,6 @@ test_sentences = test_data['tweet'].tolist()
 
 # In[21]:
 
-
-train_labels = train_labels[:100]
-train_sentences = train_sentences[:100]
-test_labels = test_labels[:10]
-test_sentences = test_sentences[:10]
-
-
-
 # In[23]:
 
 
@@ -177,7 +169,7 @@ def get_word_embedding_matrix(model,dim):
 
 def get_results(model):
     pred = model.predict(testX)
-    pred_class = [np.argmax(x) for x in pred]
+    pred_class = [int(np.argmax(x)) for x in pred]
     f1 = f1_score(test_labels,pred_class,labels=[0,1],average='micro')
     p = precision_score(test_labels,pred_class,labels=[0,1],average='micro')
     r = recall_score(test_labels,pred_class,labels=[0,1],average='micro')
@@ -206,7 +198,7 @@ trainX = encode_text(tokenizer, trainX, max_len)
 testX = encode_text(tokenizer, testX, max_len)
 trainY = to_categorical(trainY,num_classes=number_of_classes)
 
-sys.exit()
+# sys.exit()
 # In[25]:
 
 
@@ -287,7 +279,7 @@ model_bi_lstm = bi_lstm(length=max_len,
                         vocab_size=vocab_size,
                         dropout=parameters_bi_lstm['dropout'],
                         units_out=parameters_bi_lstm['units_out'],
-                        em=parameters_bi_lstm['em'],
+                        em=eval(parameters_bi_lstm['em']),
                         number_of_classes=number_of_classes)
 
 # In[ ]:
@@ -297,7 +289,7 @@ model_cnn_bi_lstm = cnn_bi_lstm(length=max_len,
                                 vocab_size=vocab_size,
                                 n_filters=parameters_bi_lstm_cnn['n_filters'],
                                 filter_size=parameters_bi_lstm_cnn['filter_size'],
-                                em=parameters_bi_lstm_cnn['em'],
+                                em=eval(parameters_bi_lstm_cnn['em']),
                                 number_of_classes=number_of_classes,
                                 conv_dropout=parameters_bi_lstm_cnn['conv_dropout'],
                                 l_or_g_dropout=parameters_bi_lstm_cnn['l_or_g_dropout'],
@@ -308,7 +300,7 @@ model_cnn_lstm = cnn_lstm(length=max_len,
                                 vocab_size=vocab_size,
                                 n_filters=parameters_bi_lstm_cnn['n_filters'],
                                 filter_size=parameters_bi_lstm_cnn['filter_size'],
-                                em=parameters_bi_lstm_cnn['em'],
+                                em=eval(parameters_bi_lstm_cnn['em']),
                                 number_of_classes=number_of_classes,
                                 conv_dropout=parameters_bi_lstm_cnn['conv_dropout'],
                                 l_or_g_dropout=parameters_bi_lstm_cnn['l_or_g_dropout'],
@@ -323,7 +315,7 @@ f1_cnn,p_cnn,r_cnn,acc_cnn,pred_class_cnn = get_results(model_cnn)
 
 add_record("cnn",f1_cnn,p_cnn,r_cnn,acc_cnn,pred_class_cnn)
 
-model.save('models/cnn.h5')
+model_cnn.save('models/cnn.h5')
 
 ##BI-LSTM
 history_bi_lstm = model_bi_lstm.fit(trainX,trainY,epochs=parameters_bi_lstm["epoch"],batch_size=parameters_bi_lstm["batch"])
@@ -332,7 +324,7 @@ f1_bi_lstm,p_bi_lstm,r_bi_lstm,acc_bi_lstm,pred_class_bi_lstm = get_results(mode
 
 add_record("bi_lstm",f1_bi_lstm,p_bi_lstm,r_bi_lstm,acc_bi_lstm,pred_class_bi_lstm)
 
-model.save('models/bi_lstm.h5')
+model_bi_lstm.save('models/bi_lstm.h5')
 
 ##CNN_bi_lstm
 history_cnn_bi_lstm = model_cnn_bi_lstm.fit(trainX,trainY,epochs=parameters_bi_lstm_cnn["epoch"],batch_size=parameters_bi_lstm_cnn["batch"])
@@ -341,7 +333,7 @@ f1_cnn_bi_lstm,p_cnn_bi_lstm,r_cnn_bi_lstm,acc_cnn_bi_lstm,pred_class_cnn_bi_lst
 
 add_record("cnn_bi_lstm",f1_cnn_bi_lstm,p_cnn_bi_lstm,r_cnn_bi_lstm,acc_cnn_bi_lstm,pred_class_cnn_bi_lstm)
 
-model.save('models/cnn_bi_lstm.h5')
+model_cnn_bi_lstm.save('models/cnn_bi_lstm.h5')
 
 ##CNN_lstm
 history_cnn_lstm = model_cnn_lstm.fit(trainX,trainY,epochs=parameters_lstm_cnn["epoch"],batch_size=parameters_lstm_cnn["batch"])
@@ -350,7 +342,7 @@ f1_cnn_lstm,p_cnn_lstm,r_cnn_lstm,acc_cnn_lstm,pred_class_cnn_lstm = get_results
 
 add_record("cnn_lstm",f1_cnn_lstm,p_cnn_lstm,r_cnn_lstm,acc_cnn_lstm,pred_class_cnn_lstm)
 
-model.save('models/cnn_lstm.h5')
+model_cnn_lstm.save('models/cnn_lstm.h5')
 
 
 with open("results/final_results.json",'w') as fout:
