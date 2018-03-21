@@ -3,12 +3,12 @@ from keras.layers import Dense, Dropout, Activation
 from keras.layers import Embedding
 from keras.layers import Conv1D, GlobalMaxPooling1D, MaxPooling1D
 from keras.layers import LSTM,Bidirectional
-# from keras.optimizers import Adam
+from keras.optimizers import Adam
 
 
 
 
-def cnn(length,vocab_size,n_dense,dropout,n_filters,filter_size,em,number_of_classes,em_trainable_flag):
+def cnn(length,vocab_size,learning_rate,n_dense,dropout,n_filters,filter_size,em,number_of_classes,em_trainable_flag):
     model = Sequential()
     model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
     model.add(Dropout(dropout))
@@ -29,13 +29,13 @@ def cnn(length,vocab_size,n_dense,dropout,n_filters,filter_size,em,number_of_cla
         model.add(Dense(number_of_classes))
         model.add(Activation('softmax'))
 
-    # optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
     print(model.summary())
     return model
 
 
-def lstm(length,vocab_size,dropout,units_out,em,number_of_classes,em_trainable_flag):
+def lstm(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,em_trainable_flag):
     model = Sequential()
     model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
     model.add(LSTM(units_out, dropout=dropout, recurrent_dropout=dropout))
@@ -44,12 +44,12 @@ def lstm(length,vocab_size,dropout,units_out,em,number_of_classes,em_trainable_f
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
     
-    # optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
     print(model.summary())
     return model
 
-def bi_lstm(length,vocab_size,dropout,units_out,em,number_of_classes,em_trainable_flag):
+def bi_lstm(length,vocab_size,learning_rate,dropout,units_out,em,number_of_classes,em_trainable_flag):
     model = Sequential()
     model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
     model.add(Bidirectional(LSTM(units_out)))
@@ -59,13 +59,13 @@ def bi_lstm(length,vocab_size,dropout,units_out,em,number_of_classes,em_trainabl
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
     
-    # optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
     print(model.summary())
     return model
 
 
-def cnn_bi_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,conv_dropout,l_or_g_dropout,units_out):
+def cnn_bi_lstm(length,vocab_size,learning_rate,n_filters,filter_size,em,number_of_classes,em_trainable_flag,conv_dropout,l_or_g_dropout,units_out):
     model = Sequential()
     model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
     model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
@@ -77,13 +77,13 @@ def cnn_bi_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
-    # optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
     print(model.summary())
     return model
 
 
-def cnn_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_trainable_flag,conv_dropout,l_or_g_dropout,units_out):
+def cnn_lstm(length,vocab_size,learning_rate,n_filters,filter_size,em,number_of_classes,em_trainable_flag,conv_dropout,l_or_g_dropout,units_out):
     model = Sequential()
     model.add(Embedding(vocab_size, len(em[0]), weights = [em],input_length=length,trainable = em_trainable_flag))
     model.add(Conv1D(filters=n_filters, kernel_size=filter_size, activation='relu'))
@@ -95,8 +95,8 @@ def cnn_lstm(length,vocab_size,n_filters,filter_size,em,number_of_classes,em_tra
         model.add(Dense(1, activation='sigmoid'))
     else:
         model.add(Dense(number_of_classes, activation='softmax'))
-    # optimizer = Adam(lr=learning_rate)
-    model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+    optimizer = Adam(lr=learning_rate)
+    model.compile(loss='binary_crossentropy',optimizer=optimizer,metrics=['accuracy'])
     print(model.summary())
     return model
 

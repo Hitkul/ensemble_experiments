@@ -1,15 +1,16 @@
 {
     "1": {
         "parameter": {
+            "learning_rate": 0.0001,
             "dropout": 0.6,
             "n_dense": 100,
             "n_filters": 200,
-            "filter_size": 3,
+            "filter_size": 1,
             "em": "embedding_matrix_word2vec",
             "em_trainable_flag": true,
             "batch": 8,
             "epoch": 20
         },
-        "acc": 0.39638009049773754
+        "acc": 0.4638009049773756
     }
 }
