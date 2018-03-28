@@ -284,6 +284,7 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
                 em=eval(parameters['em']),
                 number_of_classes=number_of_classes,
                 em_trainable_flag=parameters['em_trainable_flag'])
+    
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
     pred = model.predict(testX)
     pred_class = [np.argmax(x) for x in pred]
@@ -292,7 +293,7 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
     record[key] = {}
     record[key]["parameter"] = parameters
     record[key]["acc"] = acc
-    with open("results/cnn.json",'w')as fout:
+    with open("results/lstm.json",'w')as fout:
         json.dump(record,fout,indent=4)
     key+=1
     
@@ -306,10 +307,10 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
 
 
 search_result = gp_minimize(func=fitness,
-                            dimensions=parameters_cnn,
+                            dimensions=parameters_lstm,
                             acq_func='EI',
-                            n_calls=11,
-                            x0=default_parameters_cnn)
+                            n_calls=150,
+                            x0=default_parameters_lstm)
 
 
 # In[118]:
