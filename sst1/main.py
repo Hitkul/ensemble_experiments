@@ -8,6 +8,7 @@ import pandas as pd
 from os import remove
 from pprint import pprint
 import re
+import codecs
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
@@ -25,7 +26,7 @@ from base_learners import cnn,lstm,bi_lstm,cnn_bi_lstm,cnn_lstm
 
 
 def load_data_from_file(filename):
-    with open(filename,'r', errors='ignore') as fin:
+    with codecs.open(filename,'r', errors='ignore') as fin:
         lines = fin.readlines()
     label = [int(x.split()[0]) for x in lines]
     sentence = [' '.join(x.split()[1:]) for x in lines]
