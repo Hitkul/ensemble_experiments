@@ -269,24 +269,21 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
             "learning_rate": learning_rate,
             "units_out": units_out,
             "em": em,
-            "em_trainable_flag":True,
-            "batch": 32,
-            "epoch": 4
+            "em_trainable_flag":em_trainable_flag,
+            "batch": batch_size,
+            "epoch": epoch
         }
     
     pprint(parameters)
     
-    model = cnn(length=max_len,
+    model = lstm(length=max_len,
                 vocab_size=vocab_size,
-                n_dense=parameters['n_dense'],
+                learning_rate=parameters['learning_rate'],
                 dropout=parameters['dropout'],
-                learning_rate = parameters['learning_rate'],
-                n_filters=parameters['n_filters'],
-                filter_size=parameters['filter_size'],
-                em = eval(parameters['em']),
+                units_out=parameters['units_out'],
+                em=eval(parameters['em']),
                 number_of_classes=number_of_classes,
                 em_trainable_flag=parameters['em_trainable_flag'])
-
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
     pred = model.predict(testX)
     pred_class = [np.argmax(x) for x in pred]
