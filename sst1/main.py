@@ -217,19 +217,18 @@ embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
 
 para_learning_rate = Categorical(categories=[0.1,0.01,0.001,0.0001],name='learning_rate')
 para_dropout = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
-# para_em = Categorical(categories=[embedding_matrix_godin,embedding_matrix_word2vec],name='em')
-para_em = Categorical(categories=['embedding_matrix_word2vec'],name='em')
+para_em = Categorical(categories=[embedding_matrix_godin,embedding_matrix_word2vec],name='em')
 para_em_trainable_flag = Categorical(categories=[True,False],name='em_trainable_flag')
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
 para_epoch = Categorical(categories=[10,15,20,50],name='epoch')
 
-# para_units_out = Categorical(categories=[64,128,256,512], name='units_out')
+para_units_out = Categorical(categories=[64,128,256,512], name='units_out')
 
 # para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
 
-para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
-para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
-para_filter_size = Integer(low=1,high=6,name = 'filter_size')
+# para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
+# para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
+# para_filter_size = Integer(low=1,high=6,name = 'filter_size')
 
 
 # In[27]:
