@@ -277,7 +277,7 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
     
     pprint(parameters)
     
-    model = lstm(length=max_len,
+    model = bi_lstm(length=max_len,
                 vocab_size=vocab_size,
                 learning_rate=parameters['learning_rate'],
                 dropout=parameters['dropout'],
