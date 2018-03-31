@@ -294,7 +294,7 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
     record[key] = {}
     record[key]["parameter"] = parameters
     record[key]["acc"] = acc
-    with open("results/lstm.json",'w')as fout:
+    with open("results/bi_lstm.json",'w')as fout:
         json.dump(record,fout,indent=4)
     key+=1
     
