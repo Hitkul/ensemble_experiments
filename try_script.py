@@ -24,6 +24,8 @@ print(X.shape)
 print(y.shape)
 
 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=seed)
+
 
 from sklearn.preprocessing import LabelEncoder
 encoder =  LabelEncoder()
@@ -57,21 +59,29 @@ def model_2():
 def model_3():
     model = Sequential()
     model.add(Dense(10,input_shape=(4,),activation='relu'))
+    model.add(Dense(8,activation='relu'))
     model.add(Dense(6,activation='relu'))
     model.add(Dense(3,activation='softmax'))
-    model.compile(Adam(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
+    model.compile(SGD(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
     model.summary()
     return model
 
-m = model_3()
-history = m.fit(X[:75], y[:75],epochs=100)
 
-y_pred = m.predict(X[75:])
 
-y_test_class = np.argmax(y[75:],axis=1)
-y_pred_class = np.argmax(y_pred,axis=1)
 
-print(accuracy_score(y_test_class,y_pred_class))
+def get_pred_of_model(m):
+    m = model_3()
+    history = m.fit(X[:75], y[:75],epochs=100)
+
+    y_pred = m.predict(X[75:])
+
+    y_test_class = np.argmax(y[75:],axis=1)
+    y_pred_class = np.argmax(y_pred,axis=1)
+
+    print(accuracy_score(y_test_class,y_pred_class))
+    return y_pred_class
+
+pred_models = np.zeros(())
 
 # # --- Build ---
 # # Passing a scoring function will create cv scores during fitting
