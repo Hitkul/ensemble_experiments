@@ -1,4 +1,5 @@
 from mlens.ensemble import SuperLearner
+from mlens.visualization import corrmat
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
@@ -7,7 +8,7 @@ from pandas import DataFrame
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_iris
-
+import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import SGD,Adam
@@ -72,7 +73,7 @@ def model_3():
 
 
 def get_pred_of_model(m):
-    history = m.fit(X_train, y_train,epochs=100)
+    history = m.fit(X_train, y_train,epochs=100,verbose=0)
     y_pred = m.predict(X_test)
     y_test_class = np.argmax(y_test,axis=1)
     y_pred_class = np.argmax(y_pred,axis=1)
@@ -85,8 +86,9 @@ pred_models[:,1] = get_pred_of_model(model_2())
 pred_models[:,2] = get_pred_of_model(model_3())
 
 pred_df = pd.DataFrame(pred_models)
-print(pred_df.head())
-# corrmat(pred_df.corr(), inflate=False)
+# print(pred_df.head())
+corrmat(pred_df.corr(), inflate=False)
+plt.show()
 
 # # --- Build ---
 # # Passing a scoring function will create cv scores during fitting
