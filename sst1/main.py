@@ -267,7 +267,7 @@ def fitness(learning_rate,dropout,dropout_lstm,units_out,n_filters,filter_size,e
     print('-----------------------------combination no={0}------------------'.format(key))
     parameters = {
             "n_filters": n_filters,
-            "filter_size": filter_size,
+            "filter_size": int(filter_size),
             "conv_dropout": dropout,
             "lstm_dropout":dropout_lstm,
             "learning_rate": learning_rate,
@@ -278,19 +278,19 @@ def fitness(learning_rate,dropout,dropout_lstm,units_out,n_filters,filter_size,e
             "epoch": epoch
         }
 
-
-    
-    
     pprint(parameters)
     
-    model = bi_lstm(length=max_len,
-                vocab_size=vocab_size,
-                learning_rate=parameters['learning_rate'],
-                dropout=parameters['dropout'],
-                units_out=parameters['units_out'],
-                em=eval(parameters['em']),
-                number_of_classes=number_of_classes,
-                em_trainable_flag=parameters['em_trainable_flag'])
+    model = cnn_lstm(length=max_len,
+                    vocab_size=vocab_size,
+                    n_filters=parameters['n_filters'],
+                    filter_size=parameters['filter_size'],
+                    em=eval(parameters['em']),
+                    number_of_classes=number_of_classes,
+                    em_trainable_flag=parameters['em_trainable_flag'],
+                    learning_rate=parameters['learning_rate'],
+                    conv_dropout=parameters['conv_dropout'],
+                    l_or_g_dropout=parameters['lstm_dropout'],
+                    units_out=parameters['units_out'])
     
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
     pred = model.predict(testX)
