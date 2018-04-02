@@ -84,8 +84,7 @@ pred_models[:,0] = get_pred_of_model(model_1())
 pred_models[:,1] = get_pred_of_model(model_2())
 pred_models[:,2] = get_pred_of_model(model_3())
 
-"pred_df = pd.DataFrame(pred_mat)\n",
-    "pred_df.columns = [\"cnn\", \"bi_lstm\",\"cnn_bi_lstm\",\"cnn_lstm\"]"
+pred_df = pd.DataFrame(pred_models)
 
 # # --- Build ---
 # # Passing a scoring function will create cv scores during fitting
