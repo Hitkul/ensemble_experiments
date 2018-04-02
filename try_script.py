@@ -18,21 +18,22 @@ seed = 2017
 np.random.seed(seed)
 
 data = load_iris()
-idx = np.random.permutation(150)
-X = data.data[idx]
-y = data.target[idx]
+# idx = np.random.permutation(150)
+X = data.data
+y = data.target
 print(X.shape)
 print(y.shape)
-
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=seed)
 
 
 from sklearn.preprocessing import LabelEncoder
 encoder =  LabelEncoder()
 y1 = encoder.fit_transform(y)
-
 y = pd.get_dummies(y1).values
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=seed)
+
+
 
 
 
@@ -71,18 +72,20 @@ def model_3():
 
 
 def get_pred_of_model(m):
-    m = model_3()
-    history = m.fit(X[:75], y[:75],epochs=100)
-
-    y_pred = m.predict(X[75:])
-
-    y_test_class = np.argmax(y[75:],axis=1)
+    history = m.fit(X_train, y_train,epochs=100)
+    y_pred = m.predict(X_test)
+    y_test_class = np.argmax(y_test,axis=1)
     y_pred_class = np.argmax(y_pred,axis=1)
-
     print(accuracy_score(y_test_class,y_pred_class))
     return y_pred_class
 
-pred_models = np.zeros(())
+pred_models = np.zeros((len(X_test),3))
+pred_models[:,0] = get_pred_of_model(model_1())
+pred_models[:,1] = get_pred_of_model(model_2())
+pred_models[:,2] = get_pred_of_model(model_3())
+
+"pred_df = pd.DataFrame(pred_mat)\n",
+    "pred_df.columns = [\"cnn\", \"bi_lstm\",\"cnn_bi_lstm\",\"cnn_lstm\"]"
 
 # # --- Build ---
 # # Passing a scoring function will create cv scores during fitting
