@@ -73,40 +73,44 @@ def model_3():
 
 
 
-def get_pred_of_model(m):
-    history = m.fit(X_train, y_train,epochs=100,verbose=0)
-    y_pred = m.predict(X_test)
-    y_test_class = np.argmax(y_test,axis=1)
-    y_pred_class = np.argmax(y_pred,axis=1)
-    print(accuracy_score(y_test_class,y_pred_class))
-    return y_pred_class
+# def get_pred_of_model(m):
+#     history = m.fit(X_train, y_train,epochs=100,verbose=0)
+#     y_pred = m.predict(X_test)
+#     y_test_class = np.argmax(y_test,axis=1)
+#     y_pred_class = np.argmax(y_pred,axis=1)
+#     print(accuracy_score(y_test_class,y_pred_class))
+#     return y_pred_class
 
-pred_models = np.zeros((len(X_test),3))
-pred_models[:,0] = get_pred_of_model(model_1())
-pred_models[:,1] = get_pred_of_model(model_2())
-pred_models[:,2] = get_pred_of_model(model_3())
+# pred_models = np.zeros((len(X_test),3))
+# pred_models[:,0] = get_pred_of_model(model_1())
+# pred_models[:,1] = get_pred_of_model(model_2())
+# pred_models[:,2] = get_pred_of_model(model_3())
 
-pred_df = pd.DataFrame(pred_models)
-# print(pred_df.head())
-corrmat(pred_df.corr(), inflate=False)
-plt.show()
+# pred_df = pd.DataFrame(pred_models)
+# # print(pred_df.head())
+# corrmat(pred_df.corr(), inflate=False)
+# plt.show()
 
-# # --- Build ---
-# # Passing a scoring function will create cv scores during fitting
-# # the scorer should be a simple function accepting to vectors and returning a scalar
-# ensemble = SuperLearner(scorer=accuracy_score, random_state=seed, verbose=2)
-# # Build the first layer
-# ensemble.add([RandomForestClassifier(random_state=seed), SVC()])
-# # Attach the final meta estimator
-# ensemble.add_meta(LogisticRegression())
+m1 = KerasClassifier(build_fn=model_1, epochs=100, verbose=0)
+m2 = KerasClassifier(build_fn=model_2, epochs=100, verbose=0)
+m3 = KerasClassifier(build_fn=model_3, epochs=100, verbose=0)
 
-# # --- Use ---
+# --- Build ---
+# Passing a scoring function will create cv scores during fitting
+# the scorer should be a simple function accepting to vectors and returning a scalar
+ensemble = SuperLearner(scorer=accuracy_score, random_state=seed, verbose=2)
+# Build the first layer
+ensemble.add([m1,m2,m3])
+# Attach the final meta estimator
+ensemble.add_meta(LogisticRegression())
 
-# # Fit ensemble
-# ensemble.fit(X[:75], y[:75])
+# --- Use ---
 
-# # Predict
-# preds = ensemble.predict(X[75:])
+# Fit ensemble
+ensemble.fit(X_train, y_train)
 
-# print("Fit data:\n%r" % ensemble.data)
-# print("Prediction score: %.3f" % accuracy_score(preds, y[75:]))
+# Predict
+preds = ensemble.predict(X_test)
+
+print("Fit data:\n%r" % ensemble.data)
+print("Prediction score: %.3f" % accuracy_score(preds, y_test_class))
