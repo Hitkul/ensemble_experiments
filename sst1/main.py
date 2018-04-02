@@ -225,7 +225,7 @@ para_epoch = Categorical(categories=[5,10,15,20],name='epoch')
 
 para_units_out = Categorical(categories=[64,128,256], name='units_out')
 
-para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
+para_dropout_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'lstm_dropout')
 
 para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
 para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
@@ -237,7 +237,7 @@ para_filter_size = Integer(low=1,high=6,name = 'filter_size')
 
 # parameters_cnn = [para_learning_rate,para_dropout,para_n_dense,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
 # parameters_lstm = [para_learning_rate,para_dropout,para_units_out,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
-parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_cnn_lstm,para_units_out,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
+parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_lstm,para_units_out,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
 
 
 # In[32]:
@@ -259,14 +259,17 @@ record = {}
 
 
 ##this will change based on the model
-@use_named_args(dimensions=parameters_lstm)
-def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch):
+@use_named_args(dimensions=parameters_cnn_lstm)
+def fitness(learning_rate,dropout,dropout_lstm,units_out,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch):
     global key
     global record
     global number_of_classes
     print('-----------------------------combination no={0}------------------'.format(key))
     parameters = {
-            "dropout": dropout,
+            "n_filters": n_filters,
+            "filter_size": filter_size,
+            "conv_dropout": dropout,
+            "lstm_dropout":dropout_lstm,
             "learning_rate": learning_rate,
             "units_out": units_out,
             "em": em,
@@ -274,6 +277,9 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
             "batch": batch_size,
             "epoch": epoch
         }
+
+
+    
     
     pprint(parameters)
     
@@ -294,7 +300,7 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
     record[key] = {}
     record[key]["parameter"] = parameters
     record[key]["acc"] = acc
-    with open("results/bi_lstm.json",'w')as fout:
+    with open("results/cnn_lstm.json",'w')as fout:
         json.dump(record,fout,indent=4)
     key+=1
     
@@ -308,10 +314,10 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
 
 
 search_result = gp_minimize(func=fitness,
-                            dimensions=parameters_lstm,
+                            dimensions=parameters_cnn_lstm,
                             acq_func='EI',
                             n_calls=150,
-                            x0=default_parameters_lstm)
+                            x0=default_parameters_cnn_lstm)
 
 
 # In[118]:
