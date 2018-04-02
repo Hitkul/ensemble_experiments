@@ -13,6 +13,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import SGD,Adam
 from sklearn.model_selection import train_test_split
+from keras.wrappers.scikit_learn import KerasClassifier
 
 
 seed = 2017
