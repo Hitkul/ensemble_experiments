@@ -221,31 +221,31 @@ para_dropout = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = '
 para_em = Categorical(categories=['embedding_matrix_godin','embedding_matrix_word2vec'],name='em')
 para_em_trainable_flag = Categorical(categories=[True,False],name='em_trainable_flag')
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
-para_epoch = Categorical(categories=[10,15,20],name='epoch')
+para_epoch = Categorical(categories=[5,10,15,20],name='epoch')
 
 para_units_out = Categorical(categories=[64,128,256], name='units_out')
 
-# para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
+para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
 
-# para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
-# para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
-# para_filter_size = Integer(low=1,high=6,name = 'filter_size')
+para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
+para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
+para_filter_size = Integer(low=1,high=6,name = 'filter_size')
 
 
 # In[27]:
 
 
 # parameters_cnn = [para_learning_rate,para_dropout,para_n_dense,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
-parameters_lstm = [para_learning_rate,para_dropout,para_units_out,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
-# parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_cnn_lstm,para_units_out,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
+# parameters_lstm = [para_learning_rate,para_dropout,para_units_out,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
+parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_cnn_lstm,para_units_out,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
 
 
 # In[32]:
 
 
 # default_parameters_cnn = [0.0001,0.6,100,200,1,'embedding_matrix_word2vec',True,8,20]
-default_parameters_lstm = [0.001,0.2,128,'embedding_matrix_word2vec',True,32,20]
-# default_parameters_cnn_lstm = [0.001,0.2,0.2,128,100,5,embedding_matrix_word2vec,True,32,10]
+# default_parameters_lstm = [0.001,0.2,128,'embedding_matrix_word2vec',True,32,20]
+default_parameters_cnn_lstm = [0.001,0.4,0.4,128,100,5,embedding_matrix_word2vec,True,32,10]
 
 
 # In[33]:
@@ -260,7 +260,7 @@ record = {}
 
 ##this will change based on the model
 @use_named_args(dimensions=parameters_lstm)
-def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoch):
+def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch):
     global key
     global record
     global number_of_classes
