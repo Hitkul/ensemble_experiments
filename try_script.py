@@ -31,6 +31,7 @@ def model_1():
     model.add(Dense(3,activation='softmax'))
     model.compile(Adam(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
     model.summary()
+    return model
 
 m = model_1()
 history = m.fit(X[:75], y[:75],epochs=100)
