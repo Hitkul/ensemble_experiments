@@ -85,6 +85,8 @@ pred_models[:,1] = get_pred_of_model(model_2())
 pred_models[:,2] = get_pred_of_model(model_3())
 
 pred_df = pd.DataFrame(pred_models)
+print(pred_df.head())
+# corrmat(pred_df.corr(), inflate=False)
 
 # # --- Build ---
 # # Passing a scoring function will create cv scores during fitting
