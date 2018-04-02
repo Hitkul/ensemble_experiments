@@ -4,6 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 import numpy as np
 from pandas import DataFrame
+import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_iris
 
@@ -21,6 +22,15 @@ X = data.data[idx]
 y = data.target[idx]
 print(X.shape)
 print(y.shape)
+
+
+
+from sklearn.preprocessing import LabelEncoder
+encoder =  LabelEncoder()
+y1 = encoder.fit_transform(y)
+
+y = pd.get_dummies(y1).values
+
 
 
 def model_1():
