@@ -245,7 +245,7 @@ parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_lstm,para_un
 
 # default_parameters_cnn = [0.0001,0.6,100,200,1,'embedding_matrix_word2vec',True,8,20]
 # default_parameters_lstm = [0.001,0.2,128,'embedding_matrix_word2vec',True,32,20]
-default_parameters_cnn_lstm = [0.001,0.4,0.4,128,100,5,embedding_matrix_word2vec,True,32,10]
+default_parameters_cnn_lstm = [0.001,0.4,0.4,128,100,5,'embedding_matrix_word2vec',True,32,10]
 
 
 # In[33]:
@@ -260,7 +260,7 @@ record = {}
 
 ##this will change based on the model
 @use_named_args(dimensions=parameters_cnn_lstm)
-def fitness(learning_rate,dropout,dropout_lstm,units_out,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch):
+def fitness(learning_rate,dropout,lstm_dropout,units_out,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch):
     global key
     global record
     global number_of_classes
@@ -269,7 +269,7 @@ def fitness(learning_rate,dropout,dropout_lstm,units_out,n_filters,filter_size,e
             "n_filters": n_filters,
             "filter_size": int(filter_size),
             "conv_dropout": dropout,
-            "lstm_dropout":dropout_lstm,
+            "lstm_dropout":lstm_dropout,
             "learning_rate": learning_rate,
             "units_out": units_out,
             "em": em,
