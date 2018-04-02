@@ -46,7 +46,7 @@ def model_1():
     model.add(Dense(6,activation='tanh'))
     model.add(Dense(3,activation='softmax'))
     model.compile(Adam(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
-    model.summary()
+    # model.summary()
     return model
 
 def model_2():
@@ -56,7 +56,7 @@ def model_2():
     model.add(Dense(6,activation='relu'))
     model.add(Dense(3,activation='softmax'))
     model.compile(Adam(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
-    model.summary()
+    # model.summary()
     return model
 
 
@@ -67,7 +67,7 @@ def model_3():
     model.add(Dense(6,activation='relu'))
     model.add(Dense(3,activation='softmax'))
     model.compile(SGD(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
-    model.summary()
+    # model.summary()
     return model
 
 
