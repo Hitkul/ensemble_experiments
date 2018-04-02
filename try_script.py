@@ -7,6 +7,11 @@ from pandas import DataFrame
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_iris
 
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.optimizers import SGD,Adam
+
+
 seed = 2017
 np.random.seed(seed)
 
@@ -16,6 +21,22 @@ X = data.data[idx]
 y = data.target[idx]
 print(X.shape)
 print(y.shape)
+
+
+def model_1():
+    model = Sequential()
+    model.add(Dense(10,input_shape=(4,),activation='tanh'))
+    model.add(Dense(8,activation='tanh'))
+    model.add(Dense(6,activation='tanh'))
+    model.add(Dense(3,activation='softmax'))
+    model.compile(Adam(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
+    model.summary()
+
+m = model_1()
+history = m.fit(X[:75], y[:75],epochs=100)
+
+y_pred = m.predict(X[75:])
+print(y_pred)
 
 # # --- Build ---
 # # Passing a scoring function will create cv scores during fitting
