@@ -43,7 +43,27 @@ def model_1():
     model.summary()
     return model
 
-m = model_1()
+def model_2():
+    model = Sequential()
+    model.add(Dense(10,input_shape=(4,),activation='relu'))
+    model.add(Dense(8,activation='relu'))
+    model.add(Dense(6,activation='relu'))
+    model.add(Dense(3,activation='softmax'))
+    model.compile(Adam(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
+    model.summary()
+    return model
+
+
+def model_3():
+    model = Sequential()
+    model.add(Dense(10,input_shape=(4,),activation='relu'))
+    model.add(Dense(6,activation='relu'))
+    model.add(Dense(3,activation='softmax'))
+    model.compile(Adam(lr=0.04),'categorical_crossentropy',metrics=['accuracy'])
+    model.summary()
+    return model
+
+m = model_3()
 history = m.fit(X[:75], y[:75],epochs=100)
 
 y_pred = m.predict(X[75:])
