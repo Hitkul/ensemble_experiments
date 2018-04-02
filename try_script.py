@@ -47,7 +47,11 @@ m = model_1()
 history = m.fit(X[:75], y[:75],epochs=100)
 
 y_pred = m.predict(X[75:])
-print(y_pred)
+
+y_test_class = np.argmax(y[75:],axis=1)
+y_pred_class = np.argmax(y_pred,axis=1)
+
+print(accuracy_score(y_test_class,y_pred_class))
 
 # # --- Build ---
 # # Passing a scoring function will create cv scores during fitting
