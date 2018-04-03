@@ -280,7 +280,7 @@ def fitness(learning_rate,dropout,lstm_dropout,units_out,n_filters,filter_size,e
 
     pprint(parameters)
     
-    model = cnn_lstm(length=max_len,
+    model = cnn_bi_lstm(length=max_len,
                     vocab_size=vocab_size,
                     n_filters=parameters['n_filters'],
                     filter_size=parameters['filter_size'],
@@ -300,7 +300,7 @@ def fitness(learning_rate,dropout,lstm_dropout,units_out,n_filters,filter_size,e
     record[key] = {}
     record[key]["parameter"] = parameters
     record[key]["acc"] = acc
-    with open("results/cnn_lstm.json",'w')as fout:
+    with open("results/cnn_bi_lstm.json",'w')as fout:
         json.dump(record,fout,indent=4)
     key+=1
     
