@@ -262,6 +262,14 @@ cnn_bi_lstm_parameter={'batch': 8,
                     'n_filters': 100,
                     'units_out': 64}
 
+bi_lstm_parameter={'batch':8,
+                 'dropout': 0.6,
+                 'em': 'embedding_matrix_word2vec',
+                 'em_trainable_flag': False,
+                 'epoch': 5,
+                 'learning_rate': 0.0001,
+                 'units_out': 256}
+
 
 # In[195]:
 
@@ -303,13 +311,6 @@ def init_lstm():
 # bi_lstm
 # 0.4529
 def init_bi_lstm():
-    bi_lstm_parameter={'batch':8,
-                 'dropout': 0.6,
-                 'em': 'embedding_matrix_word2vec',
-                 'em_trainable_flag': False,
-                 'epoch': 5,
-                 'learning_rate': 0.0001,
-                 'units_out': 256}
     return bi_lstm(length=max_len,
                 vocab_size=vocab_size,
                 learning_rate=bi_lstm_parameter['learning_rate'],
