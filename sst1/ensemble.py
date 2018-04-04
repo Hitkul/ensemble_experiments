@@ -8,6 +8,7 @@ import matplotlib
 matplotlib.use('Agg')
 import sys
 sys.path.append('../')
+from __future__ import print_function
 import json
 import string
 from nltk.corpus import stopwords
@@ -412,19 +413,19 @@ acc_results['cnn_bi_lstm'],pred_class_base[:,4],pred_prob_base[:,:,4] = get_pred
 # In[207]:
 
 
-acc_results
+# acc_results
 
 
 # In[210]:
 
 
-pred_class_base[:10]
+# pred_class_base[:10]
 
 
 # In[212]:
 
 
-pred_prob_base[:2]
+# pred_prob_base[:2]
 
 
 # ## prediction corelation
@@ -439,7 +440,7 @@ pred_df.columns = ["cnn","lstm","bi_lstm","cnn_lstm","cnn_bi_lstm"]
 # In[216]:
 
 
-pred_df.head()
+# pred_df.head()
 
 
 # In[240]:
@@ -468,7 +469,7 @@ avg_pred_class=avg_pred_class.astype(int)
 
 
 acc = accuracy_score(testY,avg_pred_class)
-acc
+# acc
 
 
 # In[223]:
@@ -480,7 +481,7 @@ acc_results['average'] = acc
 # In[224]:
 
 
-acc_results
+# acc_results
 
 
 # ## Majority
@@ -495,7 +496,7 @@ majority_pred_class = [int(np.argmax(np.bincount(x))) for x in pred_class_base]
 
 
 acc = accuracy_score(testY,majority_pred_class)
-acc
+# acc
 
 
 # In[228]:
@@ -507,7 +508,7 @@ acc_results['majority'] = acc
 # In[229]:
 
 
-acc_results
+# acc_results
 
 
 # ## saving results
