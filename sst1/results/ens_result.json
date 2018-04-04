@@ -1,0 +1,9 @@
+{
+    "cnn": 0.38,
+    "lstm": 0.34,
+    "bi_lstm": 0.3,
+    "cnn_lstm": 0.31,
+    "cnn_bi_lstm": 0.35,
+    "average": 0.34,
+    "majority": 0.33
+}
