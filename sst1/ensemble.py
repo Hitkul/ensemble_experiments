@@ -33,13 +33,14 @@ import matplotlib.pyplot as plt
 # plt.rcParams["figure.figsize"] = [12,10]
 from mlens.visualization import corrmat
 from sklearn.model_selection import StratifiedKFold
+import codecs
 
 
 # In[169]:
 
 
 def load_data_from_file(filename):
-    with open(filename,'r', errors='ignore') as fin:
+    with codecs.open(filename,'r', errors='ignore') as fin:
         lines = fin.readlines()
     label = [int(x.split()[0]) for x in lines]
     sentence = [' '.join(x.split()[1:]) for x in lines]
@@ -801,7 +802,7 @@ for train,test in kfold.split(trainX,trainY):
 # In[314]:
 
 
-len(stacked_metaX),len(stacked_metaY)
+# len(stacked_metaX),len(stacked_metaY)
 
 
 # In[315]:
@@ -814,7 +815,7 @@ stacked_metaX = np.delete(stacked_metaX, (0), axis=0)
 
 
 #temp line
-stacked_metaY=stacked_metaY[-500:]
+# stacked_metaY=stacked_metaY[-500:]
 
 
 # In[317]:
