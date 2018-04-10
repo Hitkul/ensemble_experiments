@@ -15,5 +15,7 @@
         ]
     },
     "average": 0.35,
-    "majority": 0.36
+    "majority": 0.36,
+    "blend": 0.28,
+    "stacked": 0.37
 }
