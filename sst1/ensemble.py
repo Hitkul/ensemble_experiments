@@ -4,8 +4,8 @@
 # In[277]:
 
 
-# import matplotlib
-# matplotlib.use('Agg')
+import matplotlib
+matplotlib.use('Agg')
 import sys
 sys.path.append('../')
 import json
@@ -28,9 +28,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
 from base_learners import cnn,lstm,bi_lstm,cnn_bi_lstm,cnn_lstm
-get_ipython().magic('matplotlib inline')
+# get_ipython().magic('matplotlib inline')
 import matplotlib.pyplot as plt
-plt.rcParams["figure.figsize"] = [12,10]
+# plt.rcParams["figure.figsize"] = [12,10]
 from mlens.visualization import corrmat
 from sklearn.model_selection import StratifiedKFold
 
@@ -64,7 +64,7 @@ train_labels = train_labels+dev_label
 # In[172]:
 
 
-len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
+# len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
 
 
 # In[173]:
@@ -80,13 +80,13 @@ test_sentences = test_sentences[:100]
 
 
 number_of_classes = len(set(train_labels))
-number_of_classes
+# number_of_classes
 
 
 # In[175]:
 
 
-len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
+# len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
 
 
 # In[176]:
@@ -421,7 +421,7 @@ acc_results['cnn_bi_lstm'],pred_class_base[:,4],pred_prob_base[:,:,4] = get_pred
 # In[200]:
 
 
-acc_results
+# acc_results
 
 
 # In[201]:
@@ -503,7 +503,7 @@ acc_results['base_model_counts']['correct_predicted_by_some'] = correct_predicte
 # In[211]:
 
 
-acc_results
+# acc_results
 
 
 # ## prediction corelation
@@ -524,9 +524,9 @@ pred_df.head()
 # In[214]:
 
 
-# corrmat(pred_df.corr(), inflate=False,show=False)
-# plt.savefig('results/corr_matrix_base.png', bbox_inches='tight')
-corrmat(pred_df.corr(), inflate=False)
+corrmat(pred_df.corr(), inflate=False,show=False)
+plt.savefig('results/corr_matrix_base.png', bbox_inches='tight')
+# corrmat(pred_df.corr(), inflate=False)
 
 
 # ## average
@@ -548,7 +548,7 @@ avg_pred_class=avg_pred_class.astype(int)
 
 
 acc = accuracy_score(testY,avg_pred_class)
-acc
+# acc
 
 
 # In[218]:
@@ -560,7 +560,7 @@ acc_results['average'] = acc
 # In[219]:
 
 
-acc_results
+# acc_results
 
 
 # In[220]:
@@ -581,7 +581,7 @@ majority_pred_class = [int(np.argmax(np.bincount(x))) for x in pred_class_base]
 
 
 acc = accuracy_score(testY,majority_pred_class)
-acc
+# acc
 
 
 # In[223]:
@@ -593,7 +593,7 @@ acc_results['majority'] = acc
 # In[224]:
 
 
-acc_results
+# acc_results
 
 
 # In[225]:
@@ -626,7 +626,7 @@ baseY = to_categorical(baseY,num_classes=number_of_classes)
 # In[245]:
 
 
-len(baseX),len(baseY),len(devX),len(devY)
+# len(baseX),len(baseY),len(devX),len(devY)
 
 
 # In[248]:
@@ -668,7 +668,7 @@ _,metaX[:,4],_ = get_pred_of_model(init_cnn_bi_lstm(),cnn_bi_lstm_parameter['epo
 # In[256]:
 
 
-len(devY),len(metaX)
+# len(devY),len(metaX)
 
 
 # In[258]:
@@ -693,7 +693,7 @@ blend_pred_class = meta_model.predict(pred_class_base)
 
 
 acc = accuracy_score(testY,blend_pred_class)
-acc
+# acc
 
 
 # In[272]:
@@ -705,7 +705,7 @@ acc_results['blend'] = acc
 # In[273]:
 
 
-acc_results
+# acc_results
 
 
 # In[274]:
@@ -820,7 +820,7 @@ stacked_metaY=stacked_metaY[-500:]
 # In[317]:
 
 
-len(stacked_metaX),len(stacked_metaY)
+# len(stacked_metaX),len(stacked_metaY)
 
 
 # In[320]:
@@ -845,7 +845,7 @@ stacked_pred_class = stacked_meta_model.predict(pred_class_base)
 
 
 acc = accuracy_score(testY,stacked_pred_class)
-acc
+# acc
 
 
 # In[324]:
@@ -857,7 +857,7 @@ acc_results['stacked'] = acc
 # In[325]:
 
 
-acc_results
+# acc_results
 
 
 # In[326]:
@@ -871,9 +871,9 @@ pred_df['stacked']=stacked_pred_class
 # In[327]:
 
 
-# corrmat(pred_df.corr(), inflate=False,show=False)
-# plt.savefig('results/corr_matrix_full.png', bbox_inches='tight')
-corrmat(pred_df.corr(), inflate=False)
+corrmat(pred_df.corr(), inflate=False,show=False)
+plt.savefig('results/corr_matrix_full.png', bbox_inches='tight')
+# corrmat(pred_df.corr(), inflate=False)
 
 
 # ## saving results
