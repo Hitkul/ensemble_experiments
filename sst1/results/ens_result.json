@@ -1,19 +1,19 @@
 {
-    "cnn": 0.3,
-    "lstm": 0.35,
-    "bi_lstm": 0.35,
-    "cnn_lstm": 0.29,
-    "cnn_bi_lstm": 0.34,
+    "cnn": 0.27,
+    "lstm": 0.3,
+    "bi_lstm": 0.34,
+    "cnn_lstm": 0.26,
+    "cnn_bi_lstm": 0.4,
     "base_model_counts": {
         "correct_predicted_by_all": 4,
-        "incorrect_predicted_by_all": 29,
+        "incorrect_predicted_by_all": 37,
         "correct_predicted_by_some": [
-            24,
-            18,
-            17,
-            8
+            22,
+            9,
+            15,
+            13
         ]
     },
     "average": 0.35,
-    "majority": 0.34
+    "majority": 0.36
 }
