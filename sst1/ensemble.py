@@ -1,14 +1,13 @@
 
 # coding: utf-8
 
-# In[236]:
+# In[277]:
 
 
-import matplotlib
-matplotlib.use('Agg')
+# import matplotlib
+# matplotlib.use('Agg')
 import sys
 sys.path.append('../')
-from __future__ import print_function
 import json
 import string
 from nltk.corpus import stopwords
@@ -25,15 +24,18 @@ from gensim.models import KeyedVectors
 import word2vecReader as godin_embedding
 import fasttext
 from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
 from base_learners import cnn,lstm,bi_lstm,cnn_bi_lstm,cnn_lstm
-# %matplotlib inline
+get_ipython().magic('matplotlib inline')
 import matplotlib.pyplot as plt
-# plt.rcParams["figure.figsize"] = [12,10]
+plt.rcParams["figure.figsize"] = [12,10]
 from mlens.visualization import corrmat
+from sklearn.model_selection import StratifiedKFold
 
 
-# In[176]:
+# In[169]:
 
 
 def load_data_from_file(filename):
@@ -44,7 +46,7 @@ def load_data_from_file(filename):
     return label,sentence
 
 
-# In[177]:
+# In[170]:
 
 
 train_labels,train_sentences = load_data_from_file('dataset/sst1/stsa.fine.train')
@@ -52,20 +54,20 @@ dev_label,dev_sentence = load_data_from_file('dataset/sst1/stsa.fine.dev')
 test_labels,test_sentences = load_data_from_file('dataset/sst1/stsa.fine.test')
 
 
-# In[178]:
+# In[171]:
 
 
 train_sentences = train_sentences+dev_sentence
 train_labels = train_labels+dev_label
 
 
-# In[179]:
+# In[172]:
 
 
 len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
 
 
-# In[180]:
+# In[173]:
 
 
 train_labels = train_labels[:500]
@@ -74,20 +76,20 @@ test_labels=test_labels[:100]
 test_sentences = test_sentences[:100]
 
 
-# In[181]:
+# In[174]:
 
 
 number_of_classes = len(set(train_labels))
 number_of_classes
 
 
-# In[182]:
+# In[175]:
 
 
 len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
 
 
-# In[183]:
+# In[176]:
 
 
 def remove_punctuation(s):
@@ -97,7 +99,7 @@ def remove_punctuation(s):
     return s
 
 
-# In[184]:
+# In[177]:
 
 
 def clean_sentence(sentence):
@@ -123,7 +125,7 @@ def clean_sentence(sentence):
     return tokens
 
 
-# In[185]:
+# In[178]:
 
 
 print("cleaning data")
@@ -133,13 +135,13 @@ trainY = np.array(train_labels)
 testY=test_labels
 
 
-# In[186]:
+# In[179]:
 
 
 max_len = 24
 
 
-# In[187]:
+# In[180]:
 
 
 def create_tokenizer(lines):
@@ -148,7 +150,7 @@ def create_tokenizer(lines):
     return tokenizer
 
 
-# In[188]:
+# In[181]:
 
 
 def encode_text(tokenizer, lines, length):
@@ -157,7 +159,7 @@ def encode_text(tokenizer, lines, length):
     return padded
 
 
-# In[189]:
+# In[182]:
 
 
 def load_godin_word_embedding(path):
@@ -165,7 +167,7 @@ def load_godin_word_embedding(path):
     return godin_embedding.Word2Vec.load_word2vec_format(path, binary=True)
 
 
-# In[190]:
+# In[183]:
 
 
 def load_google_word2vec(file_name):
@@ -173,7 +175,7 @@ def load_google_word2vec(file_name):
     return KeyedVectors.load_word2vec_format(file_name, binary=True)
 
 
-# In[191]:
+# In[184]:
 
 
 def get_word_embedding_matrix(model,dim):
@@ -191,7 +193,7 @@ def get_word_embedding_matrix(model,dim):
     return embedding_matrix
 
 
-# In[192]:
+# In[185]:
 
 
 tokenizer = create_tokenizer(trainX)
@@ -203,14 +205,14 @@ testX = encode_text(tokenizer, testX, max_len)
 trainY = to_categorical(trainY,num_classes=number_of_classes)
 
 
-# In[144]:
+# In[123]:
 
 
 # godin_model = load_godin_word_embedding("../word_embeddings/word2vec_twitter_model.bin")
 word2vec_model= load_google_word2vec('../word_embeddings/GoogleNews-vectors-negative300.bin')
 
 
-# In[193]:
+# In[186]:
 
 
 embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
@@ -219,7 +221,7 @@ embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
 
 # ## base models
 
-# In[194]:
+# In[187]:
 
 
 cnn_parameter = {'batch': 8,
@@ -271,7 +273,7 @@ bi_lstm_parameter={'batch':8,
                  'units_out': 256}
 
 
-# In[195]:
+# In[188]:
 
 
 # cnn
@@ -289,7 +291,7 @@ def init_cnn():
                em_trainable_flag=cnn_parameter['em_trainable_flag'])
 
 
-# In[196]:
+# In[189]:
 
 
 #  lstm
@@ -305,7 +307,7 @@ def init_lstm():
                 em_trainable_flag=lstm_parameter['em_trainable_flag'])
 
 
-# In[197]:
+# In[190]:
 
 
 # bi_lstm
@@ -321,7 +323,7 @@ def init_bi_lstm():
                 em_trainable_flag=bi_lstm_parameter['em_trainable_flag'])
 
 
-# In[198]:
+# In[191]:
 
 
 # cnn_lstm
@@ -340,7 +342,7 @@ def init_cnn_lstm():
                     units_out=cnn_lstm_parameter['units_out'])
 
 
-# In[199]:
+# In[192]:
 
 
 # cnn_bi_lstm
@@ -359,11 +361,11 @@ def init_cnn_bi_lstm():
                     units_out=cnn_bi_lstm_parameter['units_out'])
 
 
-# In[200]:
+# In[193]:
 
 
-def get_pred_of_model(m,epoch,batch):
-    history = m.fit(trainX,trainY,epochs=epoch,batch_size=batch)
+def get_pred_of_model(m,epoch,batch,trainX,trainY,testX,testY):
+    history = m.fit(trainX,trainY,epochs=epoch,batch_size=batch,verbose=2)
     pred = m.predict(testX)    
     pred_class = np.argmax(pred,axis=1)
     pred_class=pred_class.astype(int)
@@ -373,7 +375,7 @@ def get_pred_of_model(m,epoch,batch):
     return acc,pred_class,pred
 
 
-# In[201]:
+# In[194]:
 
 
 pred_prob_base = np.zeros((len(testX),number_of_classes,5))
@@ -381,140 +383,502 @@ pred_class_base = np.zeros((len(testX),5),dtype=np.int32)
 acc_results={}
 
 
+# In[195]:
+
+
+cnn_base = init_cnn()
+acc_results['cnn'],pred_class_base[:,0],pred_prob_base[:,:,0] = get_pred_of_model(cnn_base,cnn_parameter['epoch'],cnn_parameter['batch'],trainX,trainY,testX,testY)
+
+
+# In[196]:
+
+
+lstm_base = init_lstm()
+acc_results['lstm'],pred_class_base[:,1],pred_prob_base[:,:,1] = get_pred_of_model(lstm_base,lstm_parameter['epoch'],lstm_parameter['batch'],trainX,trainY,testX,testY)
+
+
+# In[197]:
+
+
+bi_lstm_base=init_bi_lstm()
+acc_results['bi_lstm'],pred_class_base[:,2],pred_prob_base[:,:,2] = get_pred_of_model(bi_lstm_base,bi_lstm_parameter['epoch'],bi_lstm_parameter['batch'],trainX,trainY,testX,testY)
+
+
+# In[198]:
+
+
+cnn_lstm_base = init_cnn_lstm()
+acc_results['cnn_lstm'],pred_class_base[:,3],pred_prob_base[:,:,3] = get_pred_of_model(cnn_lstm_base,cnn_lstm_parameter['epoch'],cnn_lstm_parameter['batch'],trainX,trainY,testX,testY)
+
+
+# In[199]:
+
+
+cnn_bi_lstm_base = init_cnn_bi_lstm()
+acc_results['cnn_bi_lstm'],pred_class_base[:,4],pred_prob_base[:,:,4] = get_pred_of_model(cnn_bi_lstm_base,cnn_bi_lstm_parameter['epoch'],cnn_bi_lstm_parameter['batch'],trainX,trainY,testX,testY)
+
+
+# In[200]:
+
+
+acc_results
+
+
+# In[201]:
+
+
+pred_class_base[:10]
+
+
 # In[202]:
 
 
-acc_results['cnn'],pred_class_base[:,0],pred_prob_base[:,:,0] = get_pred_of_model(init_cnn(),cnn_parameter['epoch'],cnn_parameter['batch'])
+pred_prob_base[:2]
 
+
+# ## Analyzing performance of base models 
 
 # In[203]:
 
 
-acc_results['lstm'],pred_class_base[:,1],pred_prob_base[:,:,1] = get_pred_of_model(init_lstm(),lstm_parameter['epoch'],lstm_parameter['batch'])
+number_of_base_models = 5
 
 
 # In[204]:
 
 
-acc_results['bi_lstm'],pred_class_base[:,2],pred_prob_base[:,:,2] = get_pred_of_model(init_bi_lstm(),bi_lstm_parameter['epoch'],bi_lstm_parameter['batch'])
+correct_predicted_by_all = 0
+incorrect_predicted_by_all = 0
+correct_predicted_by_some=[0 for _ in range(number_of_base_models-1)] #index0 = correct predicted by 1, index1 = correct predicted by 2 and so on.
 
 
 # In[205]:
 
 
-acc_results['cnn_lstm'],pred_class_base[:,3],pred_prob_base[:,:,3] = get_pred_of_model(init_cnn_lstm(),cnn_lstm_parameter['epoch'],cnn_lstm_parameter['batch'])
+# pred_class_base[0],np.bincount(pred_class_base[0]),len(np.bincount(pred_class_base[0])),testY[0]
 
 
 # In[206]:
 
 
-acc_results['cnn_bi_lstm'],pred_class_base[:,4],pred_prob_base[:,:,4] = get_pred_of_model(init_cnn_bi_lstm(),cnn_bi_lstm_parameter['epoch'],cnn_bi_lstm_parameter['batch'])
+for x,y in zip(pred_class_base,testY):
+    bin_count = np.bincount(x)
+    if len(bin_count)<=y or bin_count[y]==0:
+        incorrect_predicted_by_all+=1
+    elif bin_count[y] == number_of_base_models:
+        correct_predicted_by_all+=1
+    else:
+        correct_predicted_by_some[bin_count[y]-1]+=1
 
 
 # In[207]:
 
 
-# acc_results
+incorrect_predicted_by_all,correct_predicted_by_all,correct_predicted_by_some
+
+
+# In[208]:
+
+
+if sum(correct_predicted_by_some)+correct_predicted_by_all+incorrect_predicted_by_all == len(testY):
+    print("results look good")
+else:
+    print("something went wrong")
+
+
+# In[209]:
+
+
+acc_results['base_model_counts']={}
 
 
 # In[210]:
 
 
-# pred_class_base[:10]
+acc_results['base_model_counts']['correct_predicted_by_all'] = correct_predicted_by_all
+acc_results['base_model_counts']['incorrect_predicted_by_all'] = incorrect_predicted_by_all
+acc_results['base_model_counts']['correct_predicted_by_some'] = correct_predicted_by_some
 
 
-# In[212]:
+# In[211]:
 
 
-# pred_prob_base[:2]
+acc_results
 
 
 # ## prediction corelation
 
-# In[214]:
+# In[212]:
 
 
 pred_df = pd.DataFrame(pred_class_base)
 pred_df.columns = ["cnn","lstm","bi_lstm","cnn_lstm","cnn_bi_lstm"]
 
 
-# In[216]:
+# In[213]:
 
 
-# pred_df.head()
+pred_df.head()
 
 
-# In[240]:
+# In[214]:
 
 
-corrmat(pred_df.corr(), inflate=False,show=False)
-plt.savefig('results/corr_matrix.png', bbox_inches='tight')
+# corrmat(pred_df.corr(), inflate=False,show=False)
+# plt.savefig('results/corr_matrix_base.png', bbox_inches='tight')
+corrmat(pred_df.corr(), inflate=False)
 
 
 # ## average
 
-# In[218]:
+# In[215]:
 
 
 avg_pred_prob = pred_prob_base.mean(axis=2)
 
 
-# In[219]:
+# In[216]:
 
 
 avg_pred_class = np.argmax(avg_pred_prob,axis=1)
 avg_pred_class=avg_pred_class.astype(int)
 
 
-# In[222]:
+# In[217]:
 
 
 acc = accuracy_score(testY,avg_pred_class)
-# acc
+acc
 
 
-# In[223]:
+# In[218]:
 
 
 acc_results['average'] = acc
 
 
-# In[224]:
+# In[219]:
 
 
-# acc_results
+acc_results
+
+
+# In[220]:
+
+
+pred_df['average']=avg_pred_class
 
 
 # ## Majority
 
-# In[225]:
+# In[221]:
 
 
 majority_pred_class = [int(np.argmax(np.bincount(x))) for x in pred_class_base]
 
 
-# In[227]:
+# In[222]:
 
 
 acc = accuracy_score(testY,majority_pred_class)
-# acc
+acc
 
 
-# In[228]:
+# In[223]:
 
 
 acc_results['majority'] = acc
 
 
-# In[229]:
+# In[224]:
 
 
-# acc_results
+acc_results
+
+
+# In[225]:
+
+
+pred_df['majority']=majority_pred_class
+
+
+# ## Blend ensemble
+
+# In[241]:
+
+
+seed=42
+
+
+# In[242]:
+
+
+baseX, devX, baseY, devY = train_test_split(trainX, train_labels, test_size=0.10, random_state=seed)
+
+
+# In[243]:
+
+
+baseY = np.array(baseY)
+baseY = to_categorical(baseY,num_classes=number_of_classes)
+
+
+# In[245]:
+
+
+len(baseX),len(baseY),len(devX),len(devY)
+
+
+# In[248]:
+
+
+metaX = np.zeros((len(devY),5),dtype=np.int32)
+
+
+# In[249]:
+
+
+_,metaX[:,0],_ = get_pred_of_model(init_cnn(),cnn_parameter['epoch'],cnn_parameter['batch'],baseX,baseY,devX,devY)
+
+
+# In[250]:
+
+
+_,metaX[:,1],_ = get_pred_of_model(init_lstm(),lstm_parameter['epoch'],lstm_parameter['batch'],baseX,baseY,devX,devY)
+
+
+# In[251]:
+
+
+_,metaX[:,2],_ = get_pred_of_model(init_bi_lstm(),bi_lstm_parameter['epoch'],bi_lstm_parameter['batch'],baseX,baseY,devX,devY)
+
+
+# In[252]:
+
+
+_,metaX[:,3],_ = get_pred_of_model(init_cnn_lstm(),cnn_lstm_parameter['epoch'],cnn_lstm_parameter['batch'],baseX,baseY,devX,devY)
+
+
+# In[253]:
+
+
+_,metaX[:,4],_ = get_pred_of_model(init_cnn_bi_lstm(),cnn_bi_lstm_parameter['epoch'],cnn_bi_lstm_parameter['batch'],baseX,baseY,devX,devY)
+
+
+# In[256]:
+
+
+len(devY),len(metaX)
+
+
+# In[258]:
+
+
+meta_model=LogisticRegression()
+
+
+# In[260]:
+
+
+meta_model.fit(metaX,devY)
+
+
+# In[268]:
+
+
+blend_pred_class = meta_model.predict(pred_class_base)
+
+
+# In[271]:
+
+
+acc = accuracy_score(testY,blend_pred_class)
+acc
+
+
+# In[272]:
+
+
+acc_results['blend'] = acc
+
+
+# In[273]:
+
+
+acc_results
+
+
+# In[274]:
+
+
+pred_df['blend']=blend_pred_class
+
+
+# ## Stacked ensemble
+
+# In[304]:
+
+
+np.random.seed(seed)
+
+
+# In[305]:
+
+
+kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+
+
+# In[306]:
+
+
+stacked_metaX=np.array([[0, 0, 0, 0,0]],dtype=np.int64)
+
+
+# In[307]:
+
+
+stacked_metaY = []
+
+
+# In[308]:
+
+
+count=1
+
+
+# In[309]:
+
+
+trainX=[clean_sentence(x) for x in train_sentences]
+
+
+# In[310]:
+
+
+trainY=train_labels
+
+
+# In[311]:
+
+
+trainY=np.array(trainY)
+trainX=np.array(trainX)
+
+
+# In[313]:
+
+
+for train,test in kfold.split(trainX,trainY):
+    print("----------------------itr = {}--------------".format(count))
+    stacked_trainX = list(trainX[train])
+    stacked_trainY = list(trainY[train])
+    stacked_testX = list(trainX[test])
+    stacked_testY = list(trainY[test])
+    
+    tokenizer = create_tokenizer(stacked_trainX)
+    vocab_size = len(tokenizer.word_index) + 1
+    stacked_trainX = encode_text(tokenizer, stacked_trainX, max_len)
+    stacked_testX = encode_text(tokenizer, stacked_testX, max_len)
+    stacked_trainY = to_categorical(stacked_trainY,num_classes=number_of_classes)
+    
+    embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
+    
+    for i in stacked_testY:
+        stacked_metaY.append(i)
+        
+    temp = np.zeros((len(stacked_testY),5),dtype=np.int64)
+    
+    _,temp[:,0],_ = get_pred_of_model(init_cnn(),cnn_parameter['epoch'],cnn_parameter['batch'],stacked_trainX,stacked_trainY,stacked_testX,stacked_testY)
+    _,temp[:,1],_ = get_pred_of_model(init_lstm(),lstm_parameter['epoch'],lstm_parameter['batch'],stacked_trainX,stacked_trainY,stacked_testX,stacked_testY)
+    _,temp[:,2],_ = get_pred_of_model(init_bi_lstm(),bi_lstm_parameter['epoch'],bi_lstm_parameter['batch'],stacked_trainX,stacked_trainY,stacked_testX,stacked_testY)
+    _,temp[:,3],_ = get_pred_of_model(init_cnn_lstm(),cnn_lstm_parameter['epoch'],cnn_lstm_parameter['batch'],stacked_trainX,stacked_trainY,stacked_testX,stacked_testY)
+    _,temp[:,4],_ = get_pred_of_model(init_cnn_bi_lstm(),cnn_bi_lstm_parameter['epoch'],cnn_bi_lstm_parameter['batch'],stacked_trainX,stacked_trainY,stacked_testX,stacked_testY)
+    
+    stacked_metaX = np.concatenate((stacked_metaX, temp), axis=0)
+    count+=1
+
+
+# In[314]:
+
+
+len(stacked_metaX),len(stacked_metaY)
+
+
+# In[315]:
+
+
+stacked_metaX = np.delete(stacked_metaX, (0), axis=0)
+
+
+# In[316]:
+
+
+#temp line
+stacked_metaY=stacked_metaY[-500:]
+
+
+# In[317]:
+
+
+len(stacked_metaX),len(stacked_metaY)
+
+
+# In[320]:
+
+
+stacked_meta_model=LogisticRegression()
+
+
+# In[321]:
+
+
+stacked_meta_model.fit(stacked_metaX,stacked_metaY)
+
+
+# In[322]:
+
+
+stacked_pred_class = stacked_meta_model.predict(pred_class_base)
+
+
+# In[323]:
+
+
+acc = accuracy_score(testY,stacked_pred_class)
+acc
+
+
+# In[324]:
+
+
+acc_results['stacked'] = acc
+
+
+# In[325]:
+
+
+acc_results
+
+
+# In[326]:
+
+
+pred_df['stacked']=stacked_pred_class
+
+
+# ## Prediction Correlation
+
+# In[327]:
+
+
+# corrmat(pred_df.corr(), inflate=False,show=False)
+# plt.savefig('results/corr_matrix_full.png', bbox_inches='tight')
+corrmat(pred_df.corr(), inflate=False)
 
 
 # ## saving results
 
-# In[230]:
+# In[328]:
 
 
 with open('results/ens_result.json','w') as fout:
