@@ -1,9 +1,19 @@
 {
-    "cnn": 0.38,
+    "cnn": 0.31,
     "lstm": 0.34,
     "bi_lstm": 0.3,
     "cnn_lstm": 0.31,
-    "cnn_bi_lstm": 0.35,
-    "average": 0.34,
-    "majority": 0.33
+    "cnn_bi_lstm": 0.42,
+    "average": 0.35,
+    "majority": 0.41,
+    "base_model_counts": {
+        "correct_predicted_by_all": 2,
+        "incorrect_predicted_by_all": 28,
+        "correct_predicted_by_some": [
+            17,
+            26,
+            19,
+            8
+        ]
+    }
 }
