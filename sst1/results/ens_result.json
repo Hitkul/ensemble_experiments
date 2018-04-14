@@ -1,21 +1,21 @@
 {
-    "cnn": 0.27,
-    "lstm": 0.3,
-    "bi_lstm": 0.34,
-    "cnn_lstm": 0.26,
-    "cnn_bi_lstm": 0.4,
+    "cnn": 0.32,
+    "lstm": 0.34,
+    "bi_lstm": 0.3,
+    "cnn_lstm": 0.24,
+    "cnn_bi_lstm": 0.34,
     "base_model_counts": {
-        "correct_predicted_by_all": 4,
-        "incorrect_predicted_by_all": 37,
+        "correct_predicted_by_all": 2,
+        "incorrect_predicted_by_all": 23,
         "correct_predicted_by_some": [
-            22,
-            9,
-            15,
-            13
+            6,
+            5,
+            5,
+            9
         ]
     },
-    "average": 0.35,
-    "majority": 0.36,
-    "blend": 0.28,
-    "stacked": 0.37
+    "average": 0.32,
+    "majority": 0.38,
+    "blend": 0.18,
+    "stacked": 0.32
 }
