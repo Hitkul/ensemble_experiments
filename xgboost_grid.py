@@ -23,7 +23,7 @@ param_grid={
     'max_depth': [3,4,5,6,7,8,9],
     'subsample': [0.4,0.5,0.6,0.7,0.8,0.9,1.0],
     'colsample_bytree': [0.5,0.6,0.7,0.8],
-    'n_estimators': [1000,2000,3000]
+    'n_estimators': [1000,2000,3000],
     'reg_alpha': [0.01, 0.02, 0.03, 0.04]
 }
 
