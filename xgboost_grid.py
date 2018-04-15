@@ -28,7 +28,7 @@ param_grid={
 }
 
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=7)
-grid_search = GridSearchCV(model, param_grid, scoring="neg_log_loss", n_jobs=-1, cv=kfold)
+grid_search = GridSearchCV(model, param_grid, scoring="neg_log_loss", n_jobs=-1, cv=kfold,verbose=1)
 grid_result = grid_search.fit(X, Y)
 
 
