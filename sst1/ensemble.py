@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[160]:
+# In[1]:
 
 from __future__ import print_function
 import matplotlib
@@ -28,17 +28,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
 from base_learners import cnn,lstm,bi_lstm,cnn_bi_lstm,cnn_lstm
-# get_ipython().magic('matplotlib inline')
+get_ipython().magic('matplotlib inline')
 import matplotlib.pyplot as plt
-# plt.rcParams["figure.figsize"] = [12,10]
+plt.rcParams["figure.figsize"] = [12,10]
 from mlens.visualization import corrmat
 from sklearn.model_selection import StratifiedKFold
-from xgboost_tuner.tuner import tune_xgb_params
 from xgboost import XGBClassifier
+from sklearn.model_selection import GridSearchCV
 import codecs
 
-
-# In[82]:
+# In[2]:
 
 
 def load_data_from_file(filename):
@@ -49,7 +48,7 @@ def load_data_from_file(filename):
     return label,sentence
 
 
-# In[83]:
+# In[3]:
 
 
 train_labels,train_sentences = load_data_from_file('dataset/sst1/stsa.fine.train')
@@ -57,20 +56,20 @@ dev_label,dev_sentence = load_data_from_file('dataset/sst1/stsa.fine.dev')
 test_labels,test_sentences = load_data_from_file('dataset/sst1/stsa.fine.test')
 
 
-# In[84]:
+# In[4]:
 
 
 train_sentences = train_sentences+dev_sentence
 train_labels = train_labels+dev_label
 
 
-# In[85]:
+# In[5]:
 
 
-# len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
+len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
 
 
-# In[86]:
+# In[6]:
 
 
 train_labels = train_labels[:500]
@@ -79,20 +78,20 @@ test_labels=test_labels[:100]
 test_sentences = test_sentences[:100]
 
 
-# In[87]:
+# In[7]:
 
 
 number_of_classes = len(set(train_labels))
 # number_of_classes
 
 
-# In[88]:
+# In[8]:
 
 
-len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
+print(len(train_labels),len(train_sentences),len(test_labels),len(test_sentences))
 
 
-# In[89]:
+# In[9]:
 
 
 def remove_punctuation(s):
@@ -102,7 +101,7 @@ def remove_punctuation(s):
     return s
 
 
-# In[90]:
+# In[10]:
 
 
 def clean_sentence(sentence):
@@ -128,7 +127,7 @@ def clean_sentence(sentence):
     return tokens
 
 
-# In[91]:
+# In[11]:
 
 
 print("cleaning data")
@@ -138,13 +137,13 @@ trainY = np.array(train_labels)
 testY=test_labels
 
 
-# In[92]:
+# In[12]:
 
 
 max_len = 24
 
 
-# In[93]:
+# In[13]:
 
 
 def create_tokenizer(lines):
@@ -153,7 +152,7 @@ def create_tokenizer(lines):
     return tokenizer
 
 
-# In[94]:
+# In[14]:
 
 
 def encode_text(tokenizer, lines, length):
@@ -162,7 +161,7 @@ def encode_text(tokenizer, lines, length):
     return padded
 
 
-# In[95]:
+# In[15]:
 
 
 def load_godin_word_embedding(path):
@@ -170,7 +169,7 @@ def load_godin_word_embedding(path):
     return godin_embedding.Word2Vec.load_word2vec_format(path, binary=True)
 
 
-# In[96]:
+# In[16]:
 
 
 def load_google_word2vec(file_name):
@@ -178,7 +177,7 @@ def load_google_word2vec(file_name):
     return KeyedVectors.load_word2vec_format(file_name, binary=True)
 
 
-# In[97]:
+# In[17]:
 
 
 def get_word_embedding_matrix(model,dim):
@@ -196,7 +195,7 @@ def get_word_embedding_matrix(model,dim):
     return embedding_matrix
 
 
-# In[98]:
+# In[18]:
 
 
 tokenizer = create_tokenizer(trainX)
@@ -215,7 +214,7 @@ trainY = to_categorical(trainY,num_classes=number_of_classes)
 word2vec_model= load_google_word2vec('../word_embeddings/GoogleNews-vectors-negative300.bin')
 
 
-# In[99]:
+# In[20]:
 
 
 embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
@@ -224,7 +223,7 @@ embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
 
 # ## base models
 
-# In[100]:
+# In[21]:
 
 
 cnn_parameter = {'batch': 8,
@@ -276,7 +275,7 @@ bi_lstm_parameter={'batch':8,
                  'units_out': 256}
 
 
-# In[101]:
+# In[22]:
 
 
 # cnn
@@ -294,7 +293,7 @@ def init_cnn():
                em_trainable_flag=cnn_parameter['em_trainable_flag'])
 
 
-# In[102]:
+# In[23]:
 
 
 #  lstm
@@ -310,7 +309,7 @@ def init_lstm():
                 em_trainable_flag=lstm_parameter['em_trainable_flag'])
 
 
-# In[103]:
+# In[24]:
 
 
 # bi_lstm
@@ -326,7 +325,7 @@ def init_bi_lstm():
                 em_trainable_flag=bi_lstm_parameter['em_trainable_flag'])
 
 
-# In[104]:
+# In[25]:
 
 
 # cnn_lstm
@@ -345,7 +344,7 @@ def init_cnn_lstm():
                     units_out=cnn_lstm_parameter['units_out'])
 
 
-# In[105]:
+# In[26]:
 
 
 # cnn_bi_lstm
@@ -364,7 +363,7 @@ def init_cnn_bi_lstm():
                     units_out=cnn_bi_lstm_parameter['units_out'])
 
 
-# In[106]:
+# In[27]:
 
 
 def get_pred_of_model(m,epoch,batch,trainX,trainY,testX,testY):
@@ -378,7 +377,7 @@ def get_pred_of_model(m,epoch,batch,trainX,trainY,testX,testY):
     return acc,pred_class,pred
 
 
-# In[107]:
+# In[28]:
 
 
 pred_prob_base = np.zeros((len(testX),number_of_classes,5))
@@ -386,54 +385,54 @@ pred_class_base = np.zeros((len(testX),5),dtype=np.int32)
 acc_results={}
 
 
-# In[108]:
+# In[29]:
 
 
 cnn_base = init_cnn()
 acc_results['cnn'],pred_class_base[:,0],pred_prob_base[:,:,0] = get_pred_of_model(cnn_base,cnn_parameter['epoch'],cnn_parameter['batch'],trainX,trainY,testX,testY)
 
 
-# In[109]:
+# In[30]:
 
 
 lstm_base = init_lstm()
 acc_results['lstm'],pred_class_base[:,1],pred_prob_base[:,:,1] = get_pred_of_model(lstm_base,lstm_parameter['epoch'],lstm_parameter['batch'],trainX,trainY,testX,testY)
 
 
-# In[110]:
+# In[31]:
 
 
 bi_lstm_base=init_bi_lstm()
 acc_results['bi_lstm'],pred_class_base[:,2],pred_prob_base[:,:,2] = get_pred_of_model(bi_lstm_base,bi_lstm_parameter['epoch'],bi_lstm_parameter['batch'],trainX,trainY,testX,testY)
 
 
-# In[111]:
+# In[32]:
 
 
 cnn_lstm_base = init_cnn_lstm()
 acc_results['cnn_lstm'],pred_class_base[:,3],pred_prob_base[:,:,3] = get_pred_of_model(cnn_lstm_base,cnn_lstm_parameter['epoch'],cnn_lstm_parameter['batch'],trainX,trainY,testX,testY)
 
 
-# In[112]:
+# In[33]:
 
 
 cnn_bi_lstm_base = init_cnn_bi_lstm()
 acc_results['cnn_bi_lstm'],pred_class_base[:,4],pred_prob_base[:,:,4] = get_pred_of_model(cnn_bi_lstm_base,cnn_bi_lstm_parameter['epoch'],cnn_bi_lstm_parameter['batch'],trainX,trainY,testX,testY)
 
 
-# In[113]:
+# In[34]:
 
 
-# acc_results
+print(acc_results)
 
 
-# In[114]:
+# In[35]:
 
 
 # pred_class_base[:10]
 
 
-# In[115]:
+# In[36]:
 
 
 # pred_prob_base[:2]
@@ -441,13 +440,13 @@ acc_results['cnn_bi_lstm'],pred_class_base[:,4],pred_prob_base[:,:,4] = get_pred
 
 # ## Analyzing performance of base models 
 
-# In[116]:
+# In[37]:
 
 
 number_of_base_models = 5
 
 
-# In[117]:
+# In[38]:
 
 
 correct_predicted_by_all = 0
@@ -455,13 +454,13 @@ incorrect_predicted_by_all = 0
 correct_predicted_by_some=[0 for _ in range(number_of_base_models-1)] #index0 = correct predicted by 1, index1 = correct predicted by 2 and so on.
 
 
-# In[118]:
+# In[39]:
 
 
 # pred_class_base[0],np.bincount(pred_class_base[0]),len(np.bincount(pred_class_base[0])),testY[0]
 
 
-# In[119]:
+# In[40]:
 
 
 for x,y in zip(pred_class_base,testY):
@@ -474,13 +473,13 @@ for x,y in zip(pred_class_base,testY):
         correct_predicted_by_some[bin_count[y]-1]+=1
 
 
-# In[120]:
+# In[41]:
 
 
-incorrect_predicted_by_all,correct_predicted_by_all,correct_predicted_by_some
+print(incorrect_predicted_by_all,correct_predicted_by_all,correct_predicted_by_some)
 
 
-# In[121]:
+# In[42]:
 
 
 if sum(correct_predicted_by_some)+correct_predicted_by_all+incorrect_predicted_by_all == len(testY):
@@ -489,13 +488,13 @@ else:
     print("something went wrong")
 
 
-# In[122]:
+# In[43]:
 
 
 acc_results['base_model_counts']={}
 
 
-# In[123]:
+# In[44]:
 
 
 acc_results['base_model_counts']['correct_predicted_by_all'] = correct_predicted_by_all
@@ -503,28 +502,28 @@ acc_results['base_model_counts']['incorrect_predicted_by_all'] = incorrect_predi
 acc_results['base_model_counts']['correct_predicted_by_some'] = correct_predicted_by_some
 
 
-# In[124]:
+# In[45]:
 
 
-# acc_results
+print(acc_results)
 
 
 # ## prediction corelation
 
-# In[125]:
+# In[46]:
 
 
 pred_df = pd.DataFrame(pred_class_base)
 pred_df.columns = ["cnn","lstm","bi_lstm","cnn_lstm","cnn_bi_lstm"]
 
 
-# In[126]:
+# In[47]:
 
 
 # pred_df.head()
 
 
-# In[127]:
+# In[48]:
 
 
 corrmat(pred_df.corr(), inflate=False,show=False)
@@ -534,39 +533,39 @@ plt.savefig('results/corr_matrix_base_xg.png', bbox_inches='tight')
 
 # ## average
 
-# In[128]:
+# In[49]:
 
 
 avg_pred_prob = pred_prob_base.mean(axis=2)
 
 
-# In[129]:
+# In[50]:
 
 
 avg_pred_class = np.argmax(avg_pred_prob,axis=1)
 avg_pred_class=avg_pred_class.astype(int)
 
 
-# In[130]:
+# In[51]:
 
 
 acc = accuracy_score(testY,avg_pred_class)
 # acc
 
 
-# In[131]:
+# In[52]:
 
 
 acc_results['average'] = acc
 
 
-# In[132]:
+# In[53]:
 
 
 # acc_results
 
 
-# In[133]:
+# In[54]:
 
 
 pred_df['average']=avg_pred_class
@@ -574,32 +573,32 @@ pred_df['average']=avg_pred_class
 
 # ## Majority
 
-# In[134]:
+# In[55]:
 
 
 majority_pred_class = [int(np.argmax(np.bincount(x))) for x in pred_class_base]
 
 
-# In[135]:
+# In[56]:
 
 
 acc = accuracy_score(testY,majority_pred_class)
 # acc
 
 
-# In[136]:
+# In[57]:
 
 
 acc_results['majority'] = acc
 
 
-# In[137]:
+# In[58]:
 
 
 # acc_results
 
 
-# In[138]:
+# In[59]:
 
 
 pred_df['majority']=majority_pred_class
@@ -607,113 +606,113 @@ pred_df['majority']=majority_pred_class
 
 # ## Blend ensemble
 
-# In[139]:
+# In[60]:
 
 
 seed=42
 
 
-# In[140]:
+# In[61]:
 
 
 baseX, devX, baseY, devY = train_test_split(trainX, train_labels, test_size=0.10, random_state=seed)
 
 
-# In[141]:
+# In[62]:
 
 
 baseY = np.array(baseY)
 baseY = to_categorical(baseY,num_classes=number_of_classes)
 
 
-# In[142]:
+# In[63]:
 
 
-# len(baseX),len(baseY),len(devX),len(devY)
+print(len(baseX),len(baseY),len(devX),len(devY))
 
 
-# In[143]:
+# In[64]:
 
 
 metaX = np.zeros((len(devY),5),dtype=np.int32)
 
 
-# In[144]:
+# In[65]:
 
 
 _,metaX[:,0],_ = get_pred_of_model(init_cnn(),cnn_parameter['epoch'],cnn_parameter['batch'],baseX,baseY,devX,devY)
 
 
-# In[145]:
+# In[66]:
 
 
 _,metaX[:,1],_ = get_pred_of_model(init_lstm(),lstm_parameter['epoch'],lstm_parameter['batch'],baseX,baseY,devX,devY)
 
 
-# In[146]:
+# In[67]:
 
 
 _,metaX[:,2],_ = get_pred_of_model(init_bi_lstm(),bi_lstm_parameter['epoch'],bi_lstm_parameter['batch'],baseX,baseY,devX,devY)
 
 
-# In[147]:
+# In[68]:
 
 
 _,metaX[:,3],_ = get_pred_of_model(init_cnn_lstm(),cnn_lstm_parameter['epoch'],cnn_lstm_parameter['batch'],baseX,baseY,devX,devY)
 
 
-# In[148]:
+# In[69]:
 
 
 _,metaX[:,4],_ = get_pred_of_model(init_cnn_bi_lstm(),cnn_bi_lstm_parameter['epoch'],cnn_bi_lstm_parameter['batch'],baseX,baseY,devX,devY)
 
 
-# In[149]:
+# In[70]:
 
 
-# len(devY),len(metaX)
+print(len(devY),len(metaX))
 
 
 # Logistic Regressing meta model
 
-# In[150]:
+# In[71]:
 
 
 meta_model=LogisticRegression()
 
 
-# In[151]:
+# In[72]:
 
 
 meta_model.fit(metaX,devY)
 
 
-# In[152]:
+# In[73]:
 
 
 blend_pred_class = meta_model.predict(pred_class_base)
 
 
-# In[153]:
+# In[74]:
 
 
 acc = accuracy_score(testY,blend_pred_class)
 # acc
 
 
-# In[154]:
+# In[75]:
 
 
 acc_results['blend'] = acc
 
 
-# In[155]:
+# In[76]:
 
 
-# acc_results
+print(acc_results)
 
 
-# In[156]:
+# In[77]:
 
 
 pred_df['blend']=blend_pred_class
@@ -721,67 +720,67 @@ pred_df['blend']=blend_pred_class
 
 # XGboost meta model
 
-# In[162]:
+# In[78]:
 
 
-best_params, history = tune_xgb_params(
-    cv_folds=10,
-    label=np.array(devY),
-    metric_sklearn='accuracy',
-    metric_xgb='merror',
-    n_jobs=4,
-    objective='multi:softprob',
-    random_state=seed,
-    strategy='randomized',
-    train=metaX,
-    colsample_bytree_loc=0.5,
-    colsample_bytree_scale=0.2,
-    subsample_loc=0.5,
-    subsample_scale=0.2
-)
+meta_model_xg = XGBClassifier()
 
 
-# In[163]:
+# In[79]:
 
 
-# best_params
+# param_grid={
+#     'max_depth': [3,4,5,6,7,8,9],
+#     'subsample': [0.4,0.5,0.6,0.7,0.8,0.9,1.0],
+#     'colsample_bytree': [0.5,0.6,0.7,0.8],
+#     'n_estimators': [1000,2000,3000],
+#     'reg_alpha': [0.01, 0.02, 0.03, 0.04]
+# }
+
+param_grid={
+    'max_depth': [3,4],
+    'subsample': [0.6,0.7],
+    'colsample_bytree': [0.6,0.7],
+    'n_estimators': [1000,2000],
+    'reg_alpha': [0.01, 0.02]
+}
 
 
-# In[165]:
+# In[80]:
 
 
-meta_model_xg = XGBClassifier(colsample_bytree=best_params['colsample_bytree'],
-                              gamma=best_params['gamma'],
-                              learning_rate=best_params['learning_rate'],
-                              max_depth=best_params['max_depth'],
-                              min_child_weight=best_params['min_child_weight'],
-                              n_estimators=best_params['n_estimators'],
-                              nthread=best_params['nthread'],
-                              objective=best_params['objective'],
-                              random_state=best_params['random_state'],
-                              reg_alpha=best_params['reg_alpha'],
-                              reg_lambda=best_params['reg_lambda'],
-                              scale_pos_weight=best_params['scale_pos_weight'],
-                              subsample=best_params['subsample'])
+kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 
 
-# In[166]:
+# In[81]:
 
 
-meta_model_xg.fit(metaX,devY)
+grid_search = GridSearchCV(meta_model_xg, param_grid, scoring="neg_log_loss", n_jobs=-1, cv=kfold,verbose=1)
+
+
+# In[82]:
+
+
+grid_result = grid_search.fit(metaX,devY)
+
+
+# In[ ]:
+
+
+best_est_blen_xg = grid_result.best_estimator_
 
 
 # In[167]:
 
 
-blend_pred_class_xg = meta_model_xg.predict(pred_class_base)
+blend_pred_class_xg = best_est_blen_xg.predict(pred_class_base)
 
 
 # In[171]:
 
 
 acc = accuracy_score(testY,blend_pred_class_xg)
-# acc
+acc
 
 
 # In[172]:
@@ -793,7 +792,7 @@ acc_results['blend_xg'] = acc
 # In[173]:
 
 
-# acc_results
+print(acc_results)
 
 
 # In[174]:
@@ -945,7 +944,7 @@ acc_results['stacked'] = acc
 # In[193]:
 
 
-# acc_results
+print(acc_results)
 
 
 # In[194]:
@@ -956,70 +955,44 @@ pred_df['stacked']=stacked_pred_class
 
 # xgboost meta model
 
-# In[197]:
+# In[83]:
 
 
 # stacked_metaX
 # stacked_metaY
 
 
-# In[198]:
+# In[ ]:
 
 
-best_params, history = tune_xgb_params(
-    cv_folds=10,
-    label=np.array(stacked_metaY),
-    metric_sklearn='accuracy',
-    metric_xgb='merror',
-    n_jobs=4,
-    objective='multi:softprob',
-    random_state=seed,
-    strategy='randomized',
-    train=stacked_metaX,
-    colsample_bytree_loc=0.5,
-    colsample_bytree_scale=0.2,
-    subsample_loc=0.5,
-    subsample_scale=0.2
-)
+stacked_meta_model_xg = XGBClassifier()
 
 
-# In[199]:
+# In[ ]:
 
 
-# best_params
+grid_search = GridSearchCV(stacked_meta_model_xg, param_grid, scoring="neg_log_loss", n_jobs=-1, cv=kfold,verbose=1)
 
 
-# In[200]:
+# In[ ]:
 
 
-stacked_meta_model_xg = XGBClassifier(colsample_bytree=best_params['colsample_bytree'],
-                              gamma=best_params['gamma'],
-                              learning_rate=best_params['learning_rate'],
-                              max_depth=best_params['max_depth'],
-                              min_child_weight=best_params['min_child_weight'],
-                              n_estimators=best_params['n_estimators'],
-                              nthread=best_params['nthread'],
-                              objective=best_params['objective'],
-                              random_state=best_params['random_state'],
-                              reg_alpha=best_params['reg_alpha'],
-                              reg_lambda=best_params['reg_lambda'],
-                              scale_pos_weight=best_params['scale_pos_weight'],
-                              subsample=best_params['subsample'])
+grid_result = grid_search.fit(stacked_metaX,stacked_metaY)
 
 
-# In[201]:
+# In[ ]:
 
 
-stacked_meta_model_xg.fit(stacked_metaX,stacked_metaY)
+best_est_stacked_xg = grid_result.best_estimator_
 
 
-# In[202]:
+# In[ ]:
 
 
-stacked_pred_class_xg = stacked_meta_model_xg.predict(pred_class_base)
+stacked_pred_class_xg = best_est_stacked_xg.predict(pred_class_base)
 
 
-# In[203]:
+# In[ ]:
 
 
 acc = accuracy_score(testY,stacked_pred_class_xg)
@@ -1035,7 +1008,7 @@ acc_results['stacked_xg'] = acc
 # In[205]:
 
 
-# acc_results
+print(acc_results)
 
 
 # In[206]:
