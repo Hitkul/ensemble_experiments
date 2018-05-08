@@ -3,7 +3,7 @@
 
 # In[65]:
 
-
+from __future__ import print_function
 import sys
 sys.path.append('../')
 import json
@@ -27,9 +27,9 @@ import skopt
 from skopt import gp_minimize, forest_minimize
 from skopt.space import Real, Categorical, Integer
 from skopt.utils import use_named_args
-get_ipython().magic('matplotlib inline')
-import matplotlib.pyplot as plt
-plt.rcParams["figure.figsize"] = [12,10]
+# get_ipython().magic('matplotlib inline')
+# import matplotlib.pyplot as plt
+# plt.rcParams["figure.figsize"] = [12,10]
 from base_learners import cnn,lstm,bi_lstm,cnn_bi_lstm,cnn_lstm
 
 
@@ -62,14 +62,14 @@ train_labels = train_labels+dev_label
 # In[69]:
 
 
-len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
+print(len(train_labels),len(train_sentences),len(test_labels),len(test_sentences))
 
 
 # In[70]:
 
 
 number_of_classes = len(set(train_labels))
-number_of_classes
+print("number of classes",number_of_classes)
 
 
 # In[71]:
@@ -143,17 +143,17 @@ trainY = np.array(train_labels)
 # In[77]:
 
 
-lengths = [len(line.split()) for line in trainX]
+# lengths = [len(line.split()) for line in trainX]
 
 
-# In[78]:
+# # In[78]:
 
 
-print(max(lengths))
-plt.hist(lengths)
+# print(max(lengths))
+# plt.hist(lengths)
 
 
-# In[79]:
+# # In[79]:
 
 
 max_len = 25
@@ -358,7 +358,7 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
     pred = model.predict(testX)
     pred_class = [np.argmax(x) for x in pred]
     acc = accuracy_score(test_labels,pred_class)
-    print(acc)
+    print("accuracy ",acc)
     
     record[key] = {}
     record[key]["parameter"] = parameters
@@ -384,7 +384,7 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
 search_result = gp_minimize(func=fitness,
                             dimensions=parameters_lstm,
                             acq_func='EI',
-                            n_calls=11,
+                            n_calls=200,
                             x0=default_parameters_lstm)
 
 
