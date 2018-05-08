@@ -19,8 +19,8 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 import keras.backend as K
 from gensim.models import KeyedVectors
+from gensim.models import FastText
 import word2vecReader as godin_embedding
-import fasttext
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score
 import skopt
@@ -214,8 +214,7 @@ def load_GloVe_embedding(file_name):
 
 def load_fast_text_model(file_name):
     print("Loading fast text model")
-    m = fasttext.load_model(file_name)
-    return m
+    return FastText.load_fasttext_format(file_name)
     
 
 
