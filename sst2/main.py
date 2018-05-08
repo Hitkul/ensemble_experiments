@@ -3,7 +3,7 @@
 
 # In[65]:
 
-from __future__ import print_function
+
 import sys
 sys.path.append('../')
 import json
@@ -27,9 +27,9 @@ import skopt
 from skopt import gp_minimize, forest_minimize
 from skopt.space import Real, Categorical, Integer
 from skopt.utils import use_named_args
-# get_ipython().magic('matplotlib inline')
-# import matplotlib.pyplot as plt
-# plt.rcParams["figure.figsize"] = [12,10]
+get_ipython().magic('matplotlib inline')
+import matplotlib.pyplot as plt
+plt.rcParams["figure.figsize"] = [12,10]
 from base_learners import cnn,lstm,bi_lstm,cnn_bi_lstm,cnn_lstm
 
 
@@ -62,14 +62,14 @@ train_labels = train_labels+dev_label
 # In[69]:
 
 
-print(len(train_labels),len(train_sentences),len(test_labels),len(test_sentences))
+len(train_labels),len(train_sentences),len(test_labels),len(test_sentences)
 
 
 # In[70]:
 
 
 number_of_classes = len(set(train_labels))
-print("number of classes",number_of_classes)
+number_of_classes
 
 
 # In[71]:
@@ -143,14 +143,14 @@ trainY = np.array(train_labels)
 # In[77]:
 
 
-# lengths = [len(line.split()) for line in trainX]
+lengths = [len(line.split()) for line in trainX]
 
 
-# # In[78]:
+# In[78]:
 
 
-# print(max(lengths))
-# plt.hist(lengths)
+print(max(lengths))
+plt.hist(lengths)
 
 
 # In[79]:
@@ -185,7 +185,7 @@ def load_godin_word_embedding(path):
     return godin_embedding.Word2Vec.load_word2vec_format(path, binary=True)
 
 
-# In[83]:
+# In[1]:
 
 
 def load_google_word2vec(file_name):
@@ -193,13 +193,40 @@ def load_google_word2vec(file_name):
     return KeyedVectors.load_word2vec_format(file_name, binary=True)
 
 
-# In[84]:
+# In[2]:
+
+
+def load_GloVe_embedding(file_name):
+    print('Loading GloVe word vectors.')
+    embeddings_index = dict()
+    f = open(file_name)
+    for line in f:
+        values = line.split()
+        word = values[0]
+        coefs = np.asarray(values[1:], dtype='float32')
+        embeddings_index[word] = coefs
+    f.close()
+    return embeddings_index
+
+
+# In[4]:
+
+
+def load_fast_text_model(file_name):
+    print("Loading fast text model")
+    m = fasttext.load_model(file_name)
+    return m
+    
+
+
+# In[6]:
 
 
 def get_word_embedding_matrix(model,dim):
     #dim = 300 for google word2vec
     #dim = 400 for godin
-    #dim = 100 for fast text
+    #dim = 300 for fast text
+    #dim = 300 for glove
     embedding_matrix = np.zeros((vocab_size,dim))
     for word, i in tokenizer.word_index.items():
         try:
@@ -226,19 +253,19 @@ testX = encode_text(tokenizer, testX, max_len)
 # In[86]:
 
 
-# glove_model = load_GloVe_embedding('word_embeddings/glove.6B.300d.txt')
-# fast_text_model = load_fast_text_model(back_up_for_fasttext)
-# godin_model = load_godin_word_embedding("word_embeddings/word2vec_twitter_model.bin")
-word2vec_model= load_google_word2vec('../word_embeddings/GoogleNews-vectors-negative300.bin')
+glove_model = load_GloVe_embedding("~/word_embeddings/glove.6B.300d.txt")
+fast_text_model = load_fast_text_model("~/word_embeddings/wiki.en.bin")
+godin_model = load_godin_word_embedding("~/word_embeddings/word2vec_twitter_model.bin")
+word2vec_model= load_google_word2vec('~/word_embeddings/GoogleNews-vectors-negative300.bin.bin')
 
 
 # In[87]:
 
 
-# embedding_matrix_glove = get_GloVe_embedding_matrix(glove_model)
+embedding_matrix_glove = get_word_embedding_matrix(glove_model,300)
 embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
-# embedding_matrix_fast_text = get_word_embedding_matrix(fast_text_model,100)
-# embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
+embedding_matrix_fast_text = get_word_embedding_matrix(fast_text_model,300)
+embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
 
 
 # In[88]:
@@ -246,8 +273,8 @@ embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
 
 para_learning_rate = Real(low=1e-4, high=1e-2, prior='log-uniform',name='learning_rate')
 para_dropout = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
-# para_em = Categorical(categories=[embedding_matrix_godin,embedding_matrix_word2vec],name='em')
-para_em = Categorical(categories=['embedding_matrix_word2vec'],name='em')
+para_em = Categorical(categories=['embedding_matrix_godin','embedding_matrix_word2vec','embedding_matrix_glove','embedding_matrix_fast_text'],name='em')
+# para_em = Categorical(categories=['embedding_matrix_word2vec'],name='em')
 para_em_trainable_flag = Categorical(categories=[True,False],name='em_trainable_flag')
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
 para_epoch = Categorical(categories=[5,10,15,20],name='epoch')
