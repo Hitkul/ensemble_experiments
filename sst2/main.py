@@ -253,10 +253,10 @@ testX = encode_text(tokenizer, testX, max_len)
 # In[86]:
 
 
-glove_model = load_GloVe_embedding("~/word_embeddings/glove.6B.300d.txt")
-fast_text_model = load_fast_text_model("~/word_embeddings/wiki.en.bin")
-godin_model = load_godin_word_embedding("~/word_embeddings/word2vec_twitter_model.bin")
-word2vec_model= load_google_word2vec('~/word_embeddings/GoogleNews-vectors-negative300.bin.bin')
+glove_model = load_GloVe_embedding("/home/rajivratn/word_embeddings/glove.6B.300d.txt")
+fast_text_model = load_fast_text_model("/home/rajivratn/word_embeddings/wiki.en.bin")
+godin_model = load_godin_word_embedding("/home/rajivratn/word_embeddings/word2vec_twitter_model.bin")
+word2vec_model= load_google_word2vec('/home/rajivratn/word_embeddings/GoogleNews-vectors-negative300.bin.bin')
 
 
 # In[87]:
