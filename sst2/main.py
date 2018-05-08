@@ -354,8 +354,8 @@ def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoc
                  n_hidden_layers=parameters['n_hidden_layers'])
 
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
-    pred = model.predict(testX)
-    pred_class = [np.argmax(x) for x in pred]
+    pred_class = model.predict_classes(testX)
+    # pred_class = [np.argmax(x) for x in pred]
     acc = accuracy_score(test_labels,pred_class)
     print("accuracy ",acc)
     
