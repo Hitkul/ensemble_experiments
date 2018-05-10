@@ -322,23 +322,25 @@ best_acc = 0.0
 
 
 ##this will change based on the model
-@use_named_args(dimensions=parameters_lstm)
-def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoch,n_hidden_layers,n_dense):
+@use_named_args(dimensions=parameters_cnn)
+def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch,n_hidden_layers):
     global key
     global record
     global number_of_classes
     print('-----------------------------combination no={0}------------------'.format(key))
     parameters = {
+            "n_dense": n_dense,
             "dropout": dropout,
             "learning_rate": learning_rate,
-            "units_out": units_out,
+            "n_filters": n_filters,
+            "filter_size": filter_size,
             "em": em,
             "em_trainable_flag":em_trainable_flag,
             "batch": batch_size,
             "epoch": epoch,
-            "n_hidden_layers":int(n_hidden_layers),
-            "n_dense":n_dense
+            "n_hidden_layers":n_hidden_layers
         }
+
     
     pprint(parameters)
     
