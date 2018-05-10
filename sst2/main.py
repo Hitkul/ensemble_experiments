@@ -344,16 +344,17 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_
     
     pprint(parameters)
     
-    model = lstm(length=max_len,
-                 vocab_size=vocab_size,
-                 learning_rate=parameters['learning_rate'],
-                 dropout=parameters['dropout'],
-                 units_out=parameters['units_out'],
-                 em = eval(parameters['em']),
-                 number_of_classes = number_of_classes,
-                 em_trainable_flag = parameters['em_trainable_flag'],
-                 n_dense = parameters['n_dense'],
-                 n_hidden_layers=parameters['n_hidden_layers'])
+    model = cnn(length=max_len,
+                vocab_size=vocab_size,
+                learning_rate=parameters['learning_rate'],
+                n_dense=parameters['n_dense'],
+                dropout=parameters['dropout'],
+                n_filters=parameters['n_filters'],
+                filter_size=parameters['filter_size'],
+                em=eval(parameters['em']),
+                number_of_classes=number_of_classes,
+                em_trainable_flag=parameters['em_trainable_flag'],
+                n_hidden_layers=parameters['n_hidden_layers'])
 
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
     pred_class = model.predict_classes(testX)
@@ -365,11 +366,11 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_
     record[key]["parameter"] = parameters
     record[key]["acc"] = acc
     
-    with open("results/lstm.json",'w')as fout:
+    with open("results/cnn.json",'w')as fout:
         json.dump(record,fout,indent=4)
     
     if acc>best_acc:
-        model.save("models/best_lstm.h5")
+        model.save("models/best_cnn.h5")
     
     key+=1
     
@@ -383,10 +384,10 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_
 
 
 search_result = gp_minimize(func=fitness,
-                            dimensions=parameters_lstm,
+                            dimensions=parameters_cnn,
                             acq_func='EI',
                             n_calls=200,
-                            x0=default_parameters_lstm)
+                            x0=default_parameters_cnn)
 
 
 # In[118]:
