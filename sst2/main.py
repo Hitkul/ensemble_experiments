@@ -333,12 +333,12 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_
             "dropout": dropout,
             "learning_rate": learning_rate,
             "n_filters": n_filters,
-            "filter_size": filter_size,
+            "filter_size": int(filter_size),
             "em": em,
             "em_trainable_flag":em_trainable_flag,
             "batch": batch_size,
             "epoch": epoch,
-            "n_hidden_layers":n_hidden_layers
+            "n_hidden_layers":int(n_hidden_layers)
         }
 
     
