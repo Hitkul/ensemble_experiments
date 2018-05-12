@@ -279,28 +279,28 @@ para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
 para_epoch = Categorical(categories=[5,10,15,20],name='epoch')
 para_n_hidden_layers = Integer(low=1,high=5,name = 'n_hidden_layers')
 
-# para_units_out = Categorical(categories=[64,128,256,512], name='units_out')
+para_units_out = Categorical(categories=[64,128,256,512], name='units_out')
 
 # para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
 
 para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
-para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
-para_filter_size = Integer(low=1,high=6,name = 'filter_size')
+# para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
+# para_filter_size = Integer(low=1,high=6,name = 'filter_size')
 
 
 # In[89]:
 
 
-parameters_cnn = [para_learning_rate,para_dropout,para_n_dense,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers]
-# parameters_lstm = [para_learning_rate,para_dropout,para_units_out,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers,para_n_dense]
+# parameters_cnn = [para_learning_rate,para_dropout,para_n_dense,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers]
+parameters_lstm = [para_learning_rate,para_dropout,para_units_out,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers,para_n_dense]
 # parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_cnn_lstm,para_units_out,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
 
 
 # In[90]:
 
 
-default_parameters_cnn = [0.0001,0.6,300,200,1,'embedding_matrix_word2vec',True,32,10,3]
-# default_parameters_lstm = [0.001,0.5,128,'embedding_matrix_word2vec',True,32,10,2,100]
+# default_parameters_cnn = [0.0001,0.6,300,200,1,'embedding_matrix_word2vec',True,32,10,3]
+default_parameters_lstm = [0.001,0.5,128,'embedding_matrix_word2vec',True,32,10,2,100]
 # default_parameters_cnn_lstm = [0.001,0.2,0.2,128,100,5,embedding_matrix_word2vec,True,32,10]
 
 
