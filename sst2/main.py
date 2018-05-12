@@ -343,17 +343,16 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_
     
     pprint(parameters)
     
-    model = cnn(length=max_len,
-                vocab_size=vocab_size,
-                learning_rate=parameters['learning_rate'],
-                n_dense=parameters['n_dense'],
-                dropout=parameters['dropout'],
-                n_filters=parameters['n_filters'],
-                filter_size=parameters['filter_size'],
-                em=eval(parameters['em']),
-                number_of_classes=number_of_classes,
-                em_trainable_flag=parameters['em_trainable_flag'],
-                n_hidden_layers=parameters['n_hidden_layers'])
+     model = bi_lstm(length=max_len,
+                  vocab_size=vocab_size,
+                  learning_rate=parameters['learning_rate'],
+                  dropout=parameters['dropout'],
+                  units_out=parameters['units_out'],
+                  em = eval(parameters['em']),
+                  number_of_classes = number_of_classes,
+                  em_trainable_flag = parameters['em_trainable_flag'],
+                  n_dense = parameters['n_dense'],
+                  n_hidden_layers=parameters['n_hidden_layers'])
 
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
     pred_class = model.predict_classes(testX)
