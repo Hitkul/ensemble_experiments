@@ -322,8 +322,8 @@ best_acc = 0.0
 
 
 ##this will change based on the model
-@use_named_args(dimensions=parameters_cnn)
-def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch,n_hidden_layers):
+@use_named_args(dimensions=parameters_lstm)
+def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoch,n_hidden_layers,n_dense):
     global key
     global record
     global number_of_classes
@@ -364,11 +364,11 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_
     record[key]["parameter"] = parameters
     record[key]["acc"] = acc
     
-    with open("results/cnn.json",'w')as fout:
+    with open("results/bi_lstm.json",'w')as fout:
         json.dump(record,fout,indent=4)
     
     if acc>best_acc:
-        model.save("models/best_cnn.h5")
+        model.save("models/best_bi_lstm.h5")
     
     key+=1
     
@@ -382,10 +382,10 @@ def fitness(learning_rate,dropout,n_dense,n_filters,filter_size,em,em_trainable_
 
 
 search_result = gp_minimize(func=fitness,
-                            dimensions=parameters_cnn,
+                            dimensions=parameters_lstm,
                             acq_func='EI',
                             n_calls=200,
-                            x0=default_parameters_cnn)
+                            x0=default_parameters_lstm)
 
 
 # In[118]:
