@@ -330,7 +330,7 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
     print('-----------------------------combination no={0}------------------'.format(key))
     parameters =  {
             "n_filters": n_filters,
-            "filter_size": int(filter_size,
+            "filter_size": int(filter_size),
             "conv_dropout": dropout,
             "dropout_cnn_lstm":dropout_cnn_lstm,
             "learning_rate": learning_rate,
@@ -346,7 +346,7 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
     
     pprint(parameters)
     
-     model = cnn_lstm(length=max_len,
+    model = cnn_lstm(length=max_len,
                     vocab_size=vocab_size,
                     learning_rate=parameters['learning_rate'],
                     n_filters=parameters['n_filters'],
