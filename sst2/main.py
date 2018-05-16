@@ -346,16 +346,19 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
     
     pprint(parameters)
     
-     model = bi_lstm(length=max_len,
-                  vocab_size=vocab_size,
-                  learning_rate=parameters['learning_rate'],
-                  dropout=parameters['dropout'],
-                  units_out=parameters['units_out'],
-                  em = eval(parameters['em']),
-                  number_of_classes = number_of_classes,
-                  em_trainable_flag = parameters['em_trainable_flag'],
-                  n_dense = parameters['n_dense'],
-                  n_hidden_layers=parameters['n_hidden_layers'])
+     model = cnn_lstm(length=max_len,
+                    vocab_size=vocab_size,
+                    learning_rate=parameters['learning_rate'],
+                    n_filters=parameters['n_filters'],
+                    filter_size=parameters['filter_size'],
+                    em=eval(parameters['em']),
+                    number_of_classes=number_of_classes,
+                    em_trainable_flag=parameters['em_trainable_flag'],
+                    conv_dropout=parameters['dropout'],
+                    l_or_g_dropout=parameters['dropout_cnn_lstm'],
+                    units_out=parameters['units_out'],
+                    n_dense=parameters['n_dense'],
+                    n_hidden_layers=parameters['n_hidden_layers'])
 
     history = model.fit(trainX,trainY,epochs=parameters["epoch"],batch_size=parameters["batch"])
     pred_class = model.predict_classes(testX)
@@ -367,11 +370,11 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
     record[key]["parameter"] = parameters
     record[key]["acc"] = acc
     
-    with open("results/bi_lstm.json",'w')as fout:
+    with open("results/cnn_lstm.json",'w')as fout:
         json.dump(record,fout,indent=4)
     
     if acc>best_acc:
-        model.save("models/best_bi_lstm.h5")
+        model.save("models/best_cnn_lstm.h5")
     
     key+=1
     
@@ -385,10 +388,10 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
 
 
 search_result = gp_minimize(func=fitness,
-                            dimensions=parameters_lstm,
+                            dimensions=parameters_cnn_lstm,
                             acq_func='EI',
                             n_calls=200,
-                            x0=default_parameters_lstm)
+                            x0=default_parameters_cnn_lstm)
 
 
 # In[118]:
