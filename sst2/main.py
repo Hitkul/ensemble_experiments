@@ -322,8 +322,8 @@ best_acc = 0.0
 
 
 ##this will change based on the model
-@use_named_args(dimensions=parameters_lstm)
-def fitness(learning_rate,dropout,units_out,em,em_trainable_flag,batch_size,epoch,n_hidden_layers,n_dense):
+@use_named_args(dimensions=parameters_cnn_lstm)
+def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_size,em,em_trainable_flag,batch_size,epoch,n_hidden_layers,n_dense):
     global key
     global record
     global number_of_classes
