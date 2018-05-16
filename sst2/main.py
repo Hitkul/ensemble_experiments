@@ -252,19 +252,19 @@ testX = encode_text(tokenizer, testX, max_len)
 # In[86]:
 
 
-glove_model = load_GloVe_embedding("/home/rajivratn/word_embeddings/glove.6B.300d.txt")
-fast_text_model = load_fast_text_model("/home/rajivratn/word_embeddings/wiki.en.bin")
-godin_model = load_godin_word_embedding("/home/rajivratn/word_embeddings/word2vec_twitter_model.bin")
+#glove_model = load_GloVe_embedding("/home/rajivratn/word_embeddings/glove.6B.300d.txt")
+#fast_text_model = load_fast_text_model("/home/rajivratn/word_embeddings/wiki.en.bin")
+#godin_model = load_godin_word_embedding("/home/rajivratn/word_embeddings/word2vec_twitter_model.bin")
 word2vec_model= load_google_word2vec('/home/rajivratn/word_embeddings/GoogleNews-vectors-negative300.bin.bin')
 
 
 # In[87]:
 
 
-embedding_matrix_glove = get_word_embedding_matrix(glove_model,300)
+#embedding_matrix_glove = get_word_embedding_matrix(glove_model,300)
 embedding_matrix_word2vec = get_word_embedding_matrix(word2vec_model,300)
-embedding_matrix_fast_text = get_word_embedding_matrix(fast_text_model,300)
-embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
+#embedding_matrix_fast_text = get_word_embedding_matrix(fast_text_model,300)
+#embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
 
 
 # In[88]:
@@ -272,8 +272,8 @@ embedding_matrix_godin = get_word_embedding_matrix(godin_model,400)
 
 para_learning_rate = Real(low=1e-4, high=1e-2, prior='log-uniform',name='learning_rate')
 para_dropout = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
-para_em = Categorical(categories=['embedding_matrix_godin','embedding_matrix_word2vec','embedding_matrix_glove','embedding_matrix_fast_text'],name='em')
-# para_em = Categorical(categories=['embedding_matrix_word2vec'],name='em')
+#para_em = Categorical(categories=['embedding_matrix_godin','embedding_matrix_word2vec','embedding_matrix_glove','embedding_matrix_fast_text'],name='em')
+para_em = Categorical(categories=['embedding_matrix_word2vec'],name='em')
 para_em_trainable_flag = Categorical(categories=[True,False],name='em_trainable_flag')
 para_batch_size = Categorical(categories=[8,16,32,64],name='batch_size')
 para_epoch = Categorical(categories=[5,10,15,20],name='epoch')
@@ -281,19 +281,19 @@ para_n_hidden_layers = Integer(low=1,high=5,name = 'n_hidden_layers')
 
 para_units_out = Categorical(categories=[64,128,256,512], name='units_out')
 
-# para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
+para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
 
 para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
-# para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
-# para_filter_size = Integer(low=1,high=6,name = 'filter_size')
+para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
+para_filter_size = Integer(low=1,high=6,name = 'filter_size')
 
 
 # In[89]:
 
 
 # parameters_cnn = [para_learning_rate,para_dropout,para_n_dense,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers]
-parameters_lstm = [para_learning_rate,para_dropout,para_units_out,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers,para_n_dense]
-# parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_cnn_lstm,para_units_out,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch]
+# parameters_lstm = [para_learning_rate,para_dropout,para_units_out,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers,para_n_dense]
+parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_cnn_lstm,para_units_out,para_n_filters,para_filter_size,para_em,para_em_trainable_flag,para_batch_size,para_epoch,para_n_hidden_layers,para_n_dense]
 
 
 # In[90]:
