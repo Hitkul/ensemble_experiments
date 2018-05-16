@@ -354,7 +354,7 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
                     em=eval(parameters['em']),
                     number_of_classes=number_of_classes,
                     em_trainable_flag=parameters['em_trainable_flag'],
-                    conv_dropout=parameters['dropout'],
+                    conv_dropout=parameters['conv_dropout'],
                     l_or_g_dropout=parameters['dropout_cnn_lstm'],
                     units_out=parameters['units_out'],
                     n_dense=parameters['n_dense'],
