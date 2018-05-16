@@ -281,7 +281,7 @@ para_n_hidden_layers = Integer(low=1,high=5,name = 'n_hidden_layers')
 
 para_units_out = Categorical(categories=[64,128,256,512], name='units_out')
 
-para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout')
+para_dropout_cnn_lstm = Categorical(categories=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],name = 'dropout_cnn_lstm')
 
 para_n_dense = Categorical(categories=[100,200,300,400], name='n_dense')
 para_n_filters = Categorical(categories=[100,200,300],name='n_filters')
@@ -328,17 +328,20 @@ def fitness(learning_rate,dropout,dropout_cnn_lstm,units_out,n_filters,filter_si
     global record
     global number_of_classes
     print('-----------------------------combination no={0}------------------'.format(key))
-    parameters = {
-             "dropout": dropout,
-             "learning_rate": learning_rate,
-             "units_out": units_out,
-             "em": em,
-             "em_trainable_flag":em_trainable_flag,
-             "batch": batch_size,
-             "epoch": epoch,
-             "n_hidden_layers":int(n_hidden_layers),
-             "n_dense":n_dense
-         }
+    parameters =  {
+            "n_filters": n_filters,
+            "filter_size": int(filter_size,
+            "conv_dropout": dropout,
+            "dropout_cnn_lstm":dropout_cnn_lstm,
+            "learning_rate": learning_rate,
+            "units_out": units_out,
+            "em": em,
+            "em_trainable_flag":em_trainable_flag,
+            "batch": batch_size,
+            "epoch": epoch,
+            "n_hidden_layers":int(n_hidden_layers),
+            "n_dense":n_dense
+        }
 
     
     pprint(parameters)
