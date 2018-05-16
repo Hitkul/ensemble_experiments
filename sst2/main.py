@@ -300,8 +300,8 @@ parameters_cnn_lstm = [para_learning_rate,para_dropout,para_dropout_cnn_lstm,par
 
 
 # default_parameters_cnn = [0.0001,0.6,300,200,1,'embedding_matrix_word2vec',True,32,10,3]
-default_parameters_lstm = [0.001,0.5,128,'embedding_matrix_word2vec',True,32,10,2,100]
-# default_parameters_cnn_lstm = [0.001,0.2,0.2,128,100,5,embedding_matrix_word2vec,True,32,10]
+# default_parameters_lstm = [0.001,0.5,128,'embedding_matrix_word2vec',True,32,10,2,100]
+default_parameters_cnn_lstm = [0.001,0.5,0.5,128,100,5,'embedding_matrix_word2vec',True,32,10,3,200]
 
 
 # In[91]:
